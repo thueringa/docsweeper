@@ -6,7 +6,7 @@ authors = ["Andreas Thüring <a.thuering@gmail.com>"]
 readme = "README.md"
 # homepage = https://example.com
 repository =  "https://github.com/thueringa/docsweeper"
-# documentation = TODO
+documentation = "https://docsweeper.readthedocs.io/"
 classifiers = [
   "Environment :: Console",
   "Environment :: Plugins",
