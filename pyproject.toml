@@ -1,10 +1,10 @@
 [tool.poetry]
 name = "docsweeper"
 version = "1.0.0-a.4"
-description = "Check your Python code base for outdated docstrings."
+description = "A linter for your Python code base that finds potentially outdated docstrings using version control."
 authors = ["Andreas Thüring <a.thuering@gmail.com>"]
 readme = "README.md"
-# homepage = https://example.com
+homepage = "https://docsweeper.readthedocs.io/"
 repository =  "https://github.com/thueringa/docsweeper"
 documentation = "https://docsweeper.readthedocs.io/"
 classifiers = [
