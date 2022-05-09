@@ -1,3 +1,5 @@
+# Docsweeper
+
 *Docsweeper* is a linter for version controlled *Python* code bases that finds
 potentially outdated docstrings. *Docsweeper* interacts with the version control system
 to retrieve a full revision history of a given *Python* source file. For every code
