@@ -1,0 +1,6 @@
+[MASTER]
+load-plugins=pylint_pytest
+jobs=0
+disable=logging-fstring-interpolation,unused-import
+[SPELLING]
+spelling-dict=en_US

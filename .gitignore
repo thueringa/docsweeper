@@ -1,0 +1,8 @@
+build
+.venv
+.tox
+**/__pycache__
+MANIFEST
+docs/build
+.coverage
+.cache
