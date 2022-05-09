@@ -12,5 +12,6 @@
 ### Miscellaneous
 
 -->
-## v1.0.0-a.4
-Last prerelease.
+## v1.0.0 (released May 09, 2022)
+
+Initial public release of *Docsweeper*.
