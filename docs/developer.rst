@@ -68,7 +68,8 @@ Running The Tests
 -----------------
 
 Having properly configured your executable paths, you should be able to run the tests by
-invoking `pytest` through `poetry` using the previously installed environment. Run the following command in the repository root:
+invoking `pytest` through `poetry` using the previously installed environment. Run the
+following command in the repository root:
 
 .. code-block:: console
 
@@ -82,7 +83,7 @@ environments provided in :file:`tox.ini`. For example, to run the test suite wit
 
    $ poetry run tox -e py39-test
 
-Currently supported *Python* environments are :code:`py37` :code:`py38`, :code:`py39`,
+Currently supported *Python* environments are :code:`py37`, :code:`py38`, :code:`py39`,
 and :code:`py310`. Refer to the file :file:`tox.ini` in the repository root directory
 for all available test and linter environments.
 
@@ -139,16 +140,13 @@ if there is one in ``PATH``.
 Commit Checklist
 ================
 
-Before merging a branch into ``dev`` or ``release``, verify the following conditions:
+Before merging code into ``master``, verify the following conditions:
 
-#. if any new code has been introduced: is it documented in source code? If it is
+#. If any new code has been introduced: is it documented in source code? If it is
    public, is it properly documented in the *sphinx* documentation?
-#. does the command ``poetry run tox -e pre-commit`` run through correctly? If not, fix
+#. Does the command ``poetry run tox -e pre-commit`` return successfully? If not, fix
    the issues. Run ``poetry run tox -e fix-style`` for fixing style issues automatically
    where possible.
-#. has :file:`changelog.md` been updated? Add the changes to the development version on
+#. Has :file:`changelog.md` been updated? Add the changes to the development version on
    top of the document and change the version number accordingly.
-#. only when merging into ``release``: has the version number been bumped in all
-   relevant files?
-
-   - :file:`pyproject.toml`
+#. Bump the version number in :file:`pyproject.toml` if necessary.

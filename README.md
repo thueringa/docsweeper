@@ -23,4 +23,4 @@ linter.
 - [Git](https://git-scm.com/) v1.7.0 or newer, and
 - [Mercurial](https://www.mercurial-scm.org/) v5.2 or newer.
 
-Refer to [the documentation](https://docsweeper.readthedocs.io/) for more information.
+Refer to the [documentation](https://docsweeper.readthedocs.io/) for more information.
