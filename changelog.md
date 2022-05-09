@@ -15,6 +15,10 @@
 
 ## v1.0.1 (in development)
 
+### Bugfixes
+
+- enable editable installs
+
 ## v1.0.0 (released May 09, 2022)
 
 Initial public release of *Docsweeper*.
