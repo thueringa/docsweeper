@@ -33,11 +33,13 @@ class CasesArguments:
         config: Tuple[Type[VCSCommandSet], VCSCommandSetConfig, Type[_VCSHelper]],
         git_config: Tuple[Type[VCSCommandSet], VCSCommandSetConfig, Type[_VCSHelper]],
     ) -> Tuple[List[str], Dict[str, Any]]:
-        """Test that default paramaters are set."""
+        """Test that default parameters are set."""
+
+        default_command_set, default_config = command_sets["git"]
         return ["hello"], {
             "files": [Path("hello")],
-            "vcs_command_set_type": git_config[0],
-            "vcs_command_set_config": git_config[1],
+            "vcs_command_set_type": default_command_set,
+            "vcs_command_set_config": default_config,
         }
 
     @parametrize("config", [fixture_ref("command_set_test_config")])  # type:ignore
@@ -49,10 +51,12 @@ class CasesArguments:
         git_config: Tuple[Type[VCSCommandSet], VCSCommandSetConfig, Type[_VCSHelper]],
     ) -> Tuple[List[str], Dict[str, Any]]:
         """Test options."""
+
+        default_command_set, default_config = command_sets["git"]
         return [option, "hello"], {
             "files": [Path("hello")],
-            "vcs_command_set_type": git_config[0],
-            "vcs_command_set_config": git_config[1],
+            "vcs_command_set_type": default_command_set,
+            "vcs_command_set_config": default_config,
         }
 
     @parametrize("config", [fixture_ref("command_set_test_config")])  # type:ignore
@@ -62,7 +66,8 @@ class CasesArguments:
         git_config: Tuple[Type[VCSCommandSet], VCSCommandSetConfig, Type[_VCSHelper]],
     ) -> Tuple[List[str], Dict[str, Any]]:
         """Test that ``--no-follow-rename`` option is handled correctly."""
-        expected_config = git_config[1].merge(VCSCommandSetConfig(follow_rename=False))
+        _, default_config = command_sets["git"]
+        expected_config = default_config.merge(VCSCommandSetConfig(follow_rename=False))
         return ["--no-follow-rename", "hello"], {
             "vcs_command_set_config": expected_config
         }
