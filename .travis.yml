@@ -1,0 +1,29 @@
+language: python
+os: linux
+dist: xenial
+apt:
+  packages:
+  - mercurial
+python:
+  - "3.7"
+  # - "3.8"
+  # - "3.9"
+  # - "3.10"
+cache:
+  # Cache vcs builds
+  directories:
+  - $HOME/git
+  - $HOME/hg
+install:
+  - ./scripts/install_vcs.sh
+  - pip install poetry
+  - poetry install
+script:
+  - ./scripts/run_test.sh
+env:
+  - VCS=git VERSION=2.36.0
+  # - VCS=git VERSION=2.0.0
+  # - VCS=git VERSION=1.7.0
+  # - VCS=hg VERSION=6.0
+  # - VCS=hg VERSION=5.2
+  # - VCS=hg VERSION=6.1.1

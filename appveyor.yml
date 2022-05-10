@@ -1,0 +1,16 @@
+configuration: Release
+image: Ubuntu
+matrix:
+  - VCS: git
+    VERSION: 2.35.1
+  - VCS: hg
+    VERSION: 6.1.1
+
+install:
+  - ./scripts/install_vcs.sh
+  - pip install poetry
+  - poetry install
+
+test_script:
+  - cat pytest.cfg
+  - ls -la

@@ -216,28 +216,9 @@ def _get_executable_from_config(
     option: str,
     pytest_option_name: Optional[str] = None,
 ) -> str:
-    user_executable = user_config.get(section, option)
-    if not user_executable:
-        print(
-            (
-                f"No value set in pytest.ini for '{section}.{option}'! ",
-                f"Either set one or run the tests with option '--{pytest_option_name}'."
-                if pytest_option_name
-                else "Please set one.",
-            ),
-            file=sys.stderr,
-        )
-        sys.exit(2)
-    if not os.access(user_executable, os.X_OK):
-        print(
-            (
-                f"{user_executable} set for '{section}.{option} in pytest.ini is not "
-                "executable."
-            ),
-            file=sys.stderr,
-        )
-        sys.exit(2)
-    return user_executable
+    if not user_config.has_option(section, option):
+        return ""
+    return user_config.get(section, option)
 
 
 @fixture(scope="session")
