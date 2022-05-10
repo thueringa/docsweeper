@@ -12,7 +12,10 @@
 ### Miscellaneous
 
 -->
-## v1.1.0 (in development)
+
+## v1.1.1 (in development)
+
+## v1.1.0 (release May 10, 2022)
 
 ### New Features
 
