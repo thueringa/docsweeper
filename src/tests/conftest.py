@@ -26,6 +26,7 @@ from _docsweeper.version_control import (
     VCSCommandSet,
     VCSCommandSetConfig,
     VCSShim,
+    command_sets,
 )
 
 
@@ -240,38 +241,6 @@ def _get_executable_from_config(
 
 
 @fixture(scope="session")
-def old_git_config(
-    user_config: configparser.ConfigParser, pytestconfig: pytest.Config
-) -> Optional[CommandSetTestConfig]:
-    """Encapsulate a complete command set, config, and helper for an old git version."""
-    if pytestconfig.option.no_old_git:
-        return None
-    return _create_command_set_test_config(
-        user_config,
-        GitCommandSet,
-        _GitHelper,
-        "old_git_executable",
-        "no_old_git",
-    )
-
-
-@fixture(scope="session")
-def old_hg_config(
-    user_config: configparser.ConfigParser, pytestconfig: pytest.Config
-) -> Optional[CommandSetTestConfig]:
-    """Encapsulate a complete command set, config, and helper for an old hg version."""
-    if pytestconfig.option.no_old_hg:
-        return None
-    return _create_command_set_test_config(
-        user_config,
-        MercurialCommandSet,
-        _MercurialHelper,
-        "old_hg_executable",
-        "no_old_hg",
-    )
-
-
-@fixture(scope="session")
 def hg_config(
     user_config: configparser.ConfigParser,
 ) -> CommandSetTestConfig:
@@ -286,7 +255,7 @@ def hg_config(
 
 command_set_test_config = fixture_union(
     "command_set_test_config",
-    [git_config, hg_config, old_git_config, old_hg_config],
+    [git_config, hg_config],
     scope="session",
 )
 """Fixture union for all test configs that are to be used."""
@@ -617,16 +586,19 @@ def _build_simple_repo(
 def pytest_addoption(parser: pytest.Parser) -> None:
     """Add our custom options to the pytest option parser."""
     parser.addoption(
-        "--no-old-git",
-        action="store_true",
-        default=False,
-        help="Test with old git version.",
+        "--vcs",
+        action="store",
+        type=str,
+        nargs="+",
+        choices=command_sets.keys(),
+        default=list(command_sets.keys()),
+        help="List of version control systems to run tests for.",
     )
     parser.addoption(
-        "--no-old-hg",
+        "--no-vcs",
         action="store_true",
         default=False,
-        help="Test with old Mercurial version.",
+        help="Do not test any version control systems.",
     )
 
 
@@ -643,20 +615,21 @@ def pytest_collection_modifyitems(
 ) -> None:
     """Discard certain test items according to the options passed."""
     discarded, kept = [], []
+    vcs_used = [] if config.getoption("no_vcs") else config.getoption("vcs")
     for item in items:
+        item_discarded = False
         if hasattr(item, "callspec"):
-            used_fixtures = [
-                x.lstrip("/") for x in item.callspec.id.split("-")  # type:ignore
-            ]
-            no_old_git = (
-                config.getoption("no_old_git") and "old_git_config" in used_fixtures
-            )
-            no_old_hg = (
-                config.getoption("no_old_hg") and "old_hg_config" in used_fixtures
-            )
-            if no_old_git or no_old_hg:
-                discarded.append(item)
-                continue
-        kept.append(item)
+            for vcs in command_sets.keys():
+                if vcs not in vcs_used:
+                    used_fixtures = [
+                        x.lstrip("/")
+                        for x in item.callspec.id.split("-")  # type:ignore
+                    ]
+                    if f"{vcs}_config" in used_fixtures:
+                        discarded.append(item)
+                        item_discarded = True
+                        break
+        if not item_discarded:
+            kept.append(item)
     items[:] = kept
     config.hook.pytest_deselected(items=discarded)

@@ -17,6 +17,11 @@
 ### New Features
 
 - introduce `-V`/`--version` command line option
+
+### Miscellaneous
+
+- change options for test runner
+
 ## v1.0.1 (released May 09, 2022)
 
 ### Bugfixes

@@ -27,9 +27,7 @@ Running The Test Suite
 ======================
 
 There is a test suite that tests the correct behavior of *Docsweeper* using all
-installed supported version control systems with different test repositories. Tests can
-also be run with an additional supplied *git* or *hg* executable, for example to test
-behavior of *Docsweeper* with old versions.
+installed supported version control systems with different test repositories.
 
 Test Configuration
 ------------------
@@ -46,14 +44,6 @@ located in the repository root. Supported options are:
 
     hg_executable : *string*
         Location of *Mercurial* executable on your system.
-
-    old_git_executable : *string*
-        Location of an alternative *git* executable for tests with older versions. This
-        setting is ignored if tests are run with the ``--no-old-git`` parameter.
-
-    old_hg_executable : *string*
-        Location of an alternative *Mercurial* executable for tests with older versions.
-        This setting is ignored if tests are run with the ``--no-old-hg`` parameter.
 
 For example, put the following snippet in your ``pytest.ini`` to change the *git*
 executable to ``/usr/sbin/git``:
@@ -93,14 +83,20 @@ Available Test Suites
 Specific tests can be added or omitted from the test suite by passing any combination of
 the following parameters to a test run:
 
---no-old-git  Do not run tests that use the old git version.
---no-old-hg  Do not run tests that use the old *Mercurial* version.
+--no-vcs  Do not test any version control systems. By default all version control
+          systems are tested.
 
-For example, invoke the following command to omit the old *git* version tests:
+--vcs [VCS]  Test the version control systems defined by VCS.
+             VCS is a space-separated list of version control systems that are to be
+             tested.
+
+             Default value: all available version control systems.
+
+For example, invoke the following command to omit the *Mercurial* version tests:
 
 .. code-block:: console
 
-   $ poetry run pytest --no-old-git
+   $ poetry run pytest --vcs git -- src/tests
 
 Running The Pre-Commit Script
 =============================
