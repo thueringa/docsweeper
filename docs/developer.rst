@@ -33,14 +33,14 @@ Test Configuration
 ------------------
 
 To run the tests successfully, you may need to adjust the paths of your version control
-executables. You can do so in a section named ``docsweeper`` in the file ``pytest.ini``,
+executables. You can do so in a section named ``docsweeper`` in the file ``pytest.ini``
 located in the repository root. Supported options are:
 
 [docsweeper] :
     Configuration section for *Docsweeper*.
 
     git_executable : *string*
-        location of *git* executable on your system.
+        Location of *git* executable on your system.
 
     hg_executable : *string*
         Location of *Mercurial* executable on your system.
@@ -86,11 +86,12 @@ the following parameters to a test run:
 --no-vcs  Do not test any version control systems. By default all version control
           systems are tested.
 
---vcs [VCS]  Test the version control systems defined by VCS.
-             VCS is a space-separated list of version control systems that are to be
-             tested.
+--vcs VCS  Test the version control systems defined by :code:`VCS`.
+           :code:`VCS` is a space-separated list of version control system names that
+           are to be tested.
 
-             Default value: all available version control systems.
+           Default value: all available version control systems (same as passing
+           :code:`--vcs git hg`)
 
 For example, invoke the following command to omit the *Mercurial* version tests:
 
@@ -127,8 +128,8 @@ instance of :class:`pstats.Stats`.
 Creating Documentation
 ======================
 
-To let `Sphinx* <https://www.sphinx-doc.org/en/master/>`_ create HTML documentation in
-:file:`docs/html`, invoke `poetry run tox -e docs`. It is recommended to use *Sphinx*
+To let `Sphinx <https://www.sphinx-doc.org/en/master/>`_ create HTML documentation in
+:file:`docs/html`, invoke :code:`poetry run tox -e docs`. It is recommended to use *Sphinx*
 v4.5.0 to create the docs, which is only installed for enviroments with *Python* >=
 v3.10. Above-mentioned command will choose the correct *Python* version automatically,
 if there is one in ``PATH``.
