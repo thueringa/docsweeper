@@ -15,7 +15,7 @@
 
 ## v1.1.1 (in development)
 
-## v1.1.0 (release May 10, 2022)
+## v1.1.0 (released May 10, 2022)
 
 ### New Features
 
