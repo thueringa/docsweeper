@@ -12,7 +12,11 @@
 ### Miscellaneous
 
 -->
+## v1.1.0 (in development)
 
+### New Features
+
+- introduce `-V`/`--version` command line option
 ## v1.0.1 (released May 09, 2022)
 
 ### Bugfixes

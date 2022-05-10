@@ -14,6 +14,11 @@ if sys.version_info >= (3, 8):
 else:
     from typing_extensions import TypedDict
 
+if sys.version_info < (3, 8):
+    from importlib_metadata import metadata, version
+else:
+    from importlib.metadata import version, metadata
+
 import click
 
 from _docsweeper import configure_logger
@@ -145,6 +150,16 @@ def _handle_config_arg(
     return config
 
 
+def _handle_version_arg(
+    ctx: click.Context, param: click.Option, value: Optional[bool]
+) -> None:
+    if value:
+        name = metadata("docsweeper")["Name"].capitalize()
+        version_ = version("docsweeper")
+        click.echo(f"{name} v{version_}")
+        sys.exit(0)
+
+
 def _create_default_ini_config(
     command_sets: Dict[str, Tuple[Type[VCSCommandSet], VCSCommandSetConfig]]
 ) -> configparser.ConfigParser:
@@ -232,6 +247,15 @@ def _parse_args_decorator(f):  # type: ignore
         default=None,
         help="Do not follow renames of files.",
         is_flag=True,
+    )
+    @click.option(
+        "-V",
+        "--version",
+        help="show version information.",
+        default=None,
+        is_flag=True,
+        callback=_handle_version_arg,
+        expose_value=False,
     )
     @click.argument(
         "files",
