@@ -278,8 +278,7 @@ class GitCommandSet(VCSCommandSet):
         ) -> None:
             if exception.returncode == 128:
                 # File was renamed or does not exist.
-                if "fatal: Not a valid object name" in exception.stderr:
-                    raise ValueError() from exception
+                raise ValueError() from exception
             raise exception from exception
 
         @staticmethod

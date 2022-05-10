@@ -18,6 +18,10 @@
 
 - introduce `-V`/`--version` command line option
 
+### Bugfixes
+
+- fix incompatibility with git v2.36
+
 ### Miscellaneous
 
 - change options for test runner
