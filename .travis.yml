@@ -25,6 +25,6 @@ env:
   - VCS=git VERSION=2.36.0
   # - VCS=git VERSION=2.0.0
   # - VCS=git VERSION=1.7.0
-  # - VCS=hg VERSION=6.0
+  - VCS=hg VERSION=6.0
   # - VCS=hg VERSION=5.2
   # - VCS=hg VERSION=6.1.1

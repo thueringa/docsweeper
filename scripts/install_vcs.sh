@@ -12,7 +12,7 @@ if [ "$VCS" = "git" ]; then
     git checkout "v$VERSION"
     make configure
     ./configure
-    make install NO_OPENSSL=YesPlease
+    make NO_OPENSSL=YesPlease
     cp bin-wrappers/git "$git_dir"
     cd ..
   fi
