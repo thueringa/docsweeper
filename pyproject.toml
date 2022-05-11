@@ -44,7 +44,7 @@ docsweeper = "_docsweeper.command_line:parse_args"
 DOC100 = "flake8_plugin.Plugin:Plugin"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.7,<3.11"
 typing-extensions = { version = "4.2.0", python = "<3.8"}
 click="^8.1.0"
 

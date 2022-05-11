@@ -29,6 +29,12 @@
 v1.2.0 (in development)
 =======================
 
+Dependencies
+------------
+
+- drop support for *Python* 3.11 environments. Was enabled accidentally due to build
+  configuration error, and will be reinstated when *Python* 3.11 is officially released.
+
 Deprecations
 ------------
 
@@ -51,7 +57,7 @@ New Features
 Bugfixes
 --------
 
-- fix incompatibility with git v2.36
+- fix incompatibility with *git* v2.36
 
 Miscellaneous
 -------------
