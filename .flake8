@@ -6,7 +6,6 @@ per-file-ignores=
     # type annotation is weird for pytest fixtures, ignore it
     test*.py:ANN001,ANN201,S101
     conftest.py:ANN001,ANN201,S101,W605
-enable-extensions=B1
 ignore = W503,E203,D202,RST307,DAR402
 # flake8-rst-docstrings options
 rst-roles =
@@ -22,8 +21,4 @@ rst-directives =
 # darglint options
 strictness=short
 docstring_style=sphinx
-# alfred options
-warn-symbols =
-    obsolete_module = Warning! This module is obsolete!
-    module.obsolete_function = Warning! This function is obsolete!
-    module.submodule.constant = Warning! this variable will be removed!
+
