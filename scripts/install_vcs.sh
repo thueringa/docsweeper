@@ -5,7 +5,7 @@ set -ev
 pwd
 if [ "$VCS" = "git" ]; then
   git_dir="$HOME"/git/"$VERSION"
-  if [ ! -d "$git_dir" ]; then
+  if [ ! -e "$git_dir"/git ]; then
     mkdir -p "$git_dir"
     git clone https://github.com/git/git.git
     cd git
@@ -19,7 +19,7 @@ if [ "$VCS" = "git" ]; then
   executable="$git_dir"/git
 elif [ "$VCS" = "hg" ]; then
   hg_dir="$HOME"/hg/"$VERSION"
-  if [ ! -d "$hg_dir" ]; then
+  if [ ! -e "$hg_dir"/hg ]; then
     mkdir -p "$hg_dir"
     hg clone https://www.mercurial-scm.org/repo/hg
     cd hg

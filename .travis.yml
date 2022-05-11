@@ -16,11 +16,14 @@ cache:
   - $HOME/git
   - $HOME/hg
 install:
+  - mkdir -d $HOME/tmp
   - ./scripts/install_vcs.sh
   - pip install poetry
   - poetry install
 script:
   - ./scripts/run_test.sh
+env:
+  - TMPDIR=$HOME/tmp
 env:
   - VCS=git VERSION=2.36.0
   # - VCS=git VERSION=2.0.0
