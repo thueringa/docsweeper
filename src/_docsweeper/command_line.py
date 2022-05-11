@@ -5,9 +5,10 @@ import configparser
 import logging
 import multiprocessing.dummy
 import sys
+import warnings
 from functools import wraps
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence, Tuple, Type
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Type
 
 if sys.version_info >= (3, 8):
     from typing import TypedDict
@@ -186,6 +187,120 @@ def _create_default_ini_config(
     return config
 
 
+def _handle_deprecated_vcs_shim_arg(
+    ctx: click.Context, param: click.Option, value: Optional[str]
+) -> Any:
+    if value:
+        warning = (
+            "Command line option --vcs-shim is DEPRECATED since Docsweeper v1.2.0! Use "
+            "--vcs instead."
+        )
+        warnings.warn(warning, FutureWarning)
+        return _handle_vcs_command_set_type_arg(ctx, _vcs_option, value)
+    return None
+
+
+class _VCSOption(click.Option):
+
+    _help_string = (
+        f"History of FILEs will be retrieved using this version control system. "
+    )
+
+    def __init__(
+        self,
+        param_decls: Optional[Sequence[str]],
+        callback: Optional[Callable[[click.core.Context, click.Parameter, Any], Any]],
+        help_prefix: Optional[str] = None,
+    ) -> None:
+        super().__init__(
+            param_decls=param_decls,
+            default=None,
+            help="".join(
+                [
+                    help_prefix if help_prefix else "",
+                    _VCSOption._help_string,
+                ]
+            ),
+            type=click.Choice(list(command_sets.keys())),
+            callback=_handle_vcs_command_set_type_arg,
+            show_default=list(command_sets.keys())[0],
+        )
+
+
+_vcs_option = _VCSOption(
+    ["vcs_command_set_type", "--vcs"], _handle_vcs_command_set_type_arg  # type: ignore
+)
+_vcs_executable_option = click.Option(
+    [
+        "vcs_executable",
+        "-e",
+        "--vcs-executable",
+    ],
+    help=(
+        "the version control executable located at PATH will be used during "
+        "analysis. See below for the default value of each supported version "
+        "control system."
+    ),
+    default=None,
+    type=click.Path(path_type=Path),
+)
+_no_follow_rename_option = click.Option(
+    [
+        "no_follow_rename",
+        "--no-follow-rename",
+    ],
+    default=None,
+    help="Do not follow renames of files.",
+    is_flag=True,
+)
+_config_option = click.Option(
+    [
+        "-c",
+        "--config",
+    ],
+    help="Load a Docsweeper configuration file located at PATH.",
+    default=None,
+    type=click.Path(path_type=Path),
+    callback=_handle_config_arg,
+)
+_verbose_option = click.Option(
+    [
+        "-v",
+        "--verbose",
+    ],
+    help="Set verbose mode.",
+    callback=_handle_verbosity_arg,
+    is_flag=True,
+    expose_value=False,
+)
+_debug_option = click.Option(
+    [
+        "-d",
+        "--debug",
+    ],
+    help="Set debugging mode. Lots of messages.",
+    callback=_handle_debug_arg,
+    is_flag=True,
+    expose_value=False,
+)
+_version_option = click.Option(
+    [
+        "-V",
+        "--version",
+    ],
+    help="Show version information.",
+    default=None,
+    is_flag=True,
+    callback=_handle_version_arg,
+    expose_value=False,
+)
+_vcs_shim_option = _VCSOption(
+    ["vcs_command_set_type", "--vcs-shim"],
+    _handle_deprecated_vcs_shim_arg,  # type: ignore
+    'DEPRECATED since v1.2.0! Use option "--vcs" instead. ',
+)
+
+
 def _parse_args_decorator(f):  # type: ignore
     """Wrap around the decorators of :func:`parse_args`.
 
@@ -200,69 +315,16 @@ def _parse_args_decorator(f):  # type: ignore
         invoke_without_command=True,
         cls=_DocsweeperGroup,
         context_settings={"help_option_names": ["--help", "-h"]},
-    )
-    @click.option(
-        "vcs_command_set_type",
-        "--vcs-shim",
-        default=None,
-        help=(
-            f"History of FILEs will be retrieved using this version control system. "
-            f"Default value: {list(command_sets.keys())[0]}"
-        ),
-        type=click.Choice(list(command_sets.keys())),
-        callback=_handle_vcs_command_set_type_arg,
-    )
-    @click.option(
-        "-v",
-        "--verbose",
-        help="Set verbose mode.",
-        callback=_handle_verbosity_arg,
-        is_flag=True,
-        expose_value=False,
-    )
-    @click.option(
-        "-d",
-        "--debug",
-        help="Set debugging mode. Lots of messages.",
-        callback=_handle_debug_arg,
-        is_flag=True,
-        expose_value=False,
-    )
-    @click.option(
-        "vcs_executable",
-        "-e",
-        "--vcs-executable",
-        help=(
-            "the version control executable located at PATH will be used during "
-            "analysis. See below for the default value of each supported version "
-            "control system."
-        ),
-        default=None,
-        type=click.Path(path_type=Path),
-    )
-    @click.option(
-        "-c",
-        "--config",
-        help="Load a Docsweeper configuration file located at PATH.",
-        default=None,
-        type=click.Path(path_type=Path),
-        callback=_handle_config_arg,
-    )
-    @click.option(
-        "no_follow_rename",
-        "--no-follow-rename",
-        default=None,
-        help="Do not follow renames of files.",
-        is_flag=True,
-    )
-    @click.option(
-        "-V",
-        "--version",
-        help="Show version information.",
-        default=None,
-        is_flag=True,
-        callback=_handle_version_arg,
-        expose_value=False,
+        params=[
+            _vcs_option,
+            _vcs_executable_option,
+            _no_follow_rename_option,
+            _config_option,
+            _verbose_option,
+            _debug_option,
+            _version_option,
+            _vcs_shim_option,
+        ],
     )
     @click.argument(
         "files",

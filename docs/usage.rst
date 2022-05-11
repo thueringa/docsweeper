@@ -46,7 +46,7 @@ For example, to analyze the source file :file:`source.py` in a git repository, r
 
 .. code-block:: console
 
-   $ docsweeper --vcs-shim git source.py
+   $ docsweeper --vcs git source.py
 
 If the default executable location for your version control system is not correct for
 your system, override it using :code:`--vcs-executable` option or a :ref:`configuration
@@ -54,7 +54,7 @@ file <file_config>`:
 
 .. code-block:: console
 
-   $ docsweeper --vcs-shim git --vcs-executable /path/to/git source.py
+   $ docsweeper --vcs git --vcs-executable /path/to/git source.py
 
 .. _cmdline_spec:
 
@@ -71,21 +71,35 @@ Usage: ``docsweeper [OPTIONS] FILE...``
 Analyze ``FILE`` or multiple ``FILEs`` for outdated docstrings.
 
 Options:
-  --vcs-shim SHIM            History of FILEs will be retrieved using the
+  --vcs VCS                  History of FILEs will be retrieved using the
+                             version control system ``VCS``.
+
+                             Supported values for ``VCS``: ``git|hg``
+
+                             Default value: ``git``
+  -e, --vcs-executable PATH  the version control executable located at ``PATH``
+                             will be used during analysis.
+  --no-follow-rename         Do not follow renames of files.
+  -c, --config PATH          Load a Docsweeper configuration file located at
+                             ``PATH``.
+  -v, --verbose              Set verbose mode.
+  -d, --debug                Set debugging mode. Lots of messages.
+
+  -V, --version              Show version information.
+  --vcs-shim SHIM
+                             .. caution::
+
+                                DEPRECATED since v1.2.0! Use option ``--vcs`` instead.
+
+                             History of FILEs will be retrieved using the
                              version control system ``SHIM``.
 
                              Supported values for ``SHIM``: ``git|hg``
 
                              Default value: ``git``
-  -v, --verbose              Set verbose mode.
-  -d, --debug                Set debugging mode. Lots of messages.
-  -e, --vcs-executable PATH  the version control executable located at ``PATH``
-                             will be used during analysis.
-  -c, --config PATH          Load a Docsweeper configuration file located at
-                             ``PATH``.
-  --no-follow-rename         Do not follow renames of files.
-  -V, --version              Show version information.
   -h, --help                 Show command line reference.
+
+
 
 Invoking Docsweeper From Python Code
 ------------------------------------

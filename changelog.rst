@@ -7,8 +7,14 @@
     vX.X.X (released XXX XX, XXXX)
     ==============================
 
+    Dependencies
+    ------------
+
     Incompatible Changes
     --------------------
+
+    Deprecations
+    ------------
 
     New Features
     ------------
@@ -20,8 +26,19 @@
     -------------
 
 
-v1.1.1 (in development)
+v1.2.0 (in development)
 =======================
+
+Deprecations
+------------
+
+- command line option ``--vcs-shim``. Use command line option ``--vcs`` that was
+  introduced in this version instead.
+
+New Features
+------------
+
+- introduce ``--vcs`` command line option.
 
 v1.1.0 (released May 10, 2022)
 ==============================
@@ -29,7 +46,7 @@ v1.1.0 (released May 10, 2022)
 New Features
 ------------
 
-- introduce `-V`/`--version` command line option
+- introduce ``-V``/``--version`` command line option
 
 Bugfixes
 --------

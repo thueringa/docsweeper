@@ -95,32 +95,43 @@ class CasesArguments:
     ) -> Tuple[List[str], Dict[str, Any]]:
         """Test that parameters that consume strings are handle correctly."""
         return (
-            ["--vcs-shim", "git", "other/file"],
+            ["--vcs", "git", "other/file"],
             {
                 "files": [Path("other/file")],
                 "vcs_command_set_type": git_config[0],
             },
         )
 
+    @pytest.mark.filterwarnings("ignore:Command line option --vcs-shim is DEPRECATED")
+    @parametrize("vcs_option_name", ["--vcs-shim", "--vcs"])  # type:ignore
     @parametrize("config", [fixture_ref("command_set_test_config")])  # type:ignore
-    def case_vcs_shim(
+    def case_vcs(
         self,
+        vcs_option_name: str,
         config: Tuple[Type[VCSCommandSet], VCSCommandSetConfig, Type[_VCSHelper]],
     ) -> Tuple[List[str], Dict[str, Any]]:
-        """Test that ``--vcs-shim`` parameter is handled correctly."""
-        return ["--vcs-shim", str(config[0].name), "other/file"], {
+        """Test that vcs option is handled correctly."""
+        return [vcs_option_name, str(config[0].name), "other/file"], {
             "vcs_command_set_type": config[0],
         }
 
+    @pytest.mark.filterwarnings("ignore:Command line option --vcs-shim is DEPRECATED")
+    @parametrize("vcs_option_name", ["--vcs-shim", "--vcs"])  # type:ignore
     @pytest.mark.xfail(raises=click.exceptions.BadParameter, strict=True)
-    def case_vcs_shim_unsupported(self) -> Tuple[List[str], Dict[str, Any]]:
-        """Test that passing unsupported version control shim is handled correctly."""
-        return ["--vcs-shim", "cat", "other/file"], {}
+    def case_vcs_unsupported(
+        self, vcs_option_name: str
+    ) -> Tuple[List[str], Dict[str, Any]]:
+        """Test that passing unsupported vcs is handled correctly."""
+        return [vcs_option_name, "cat", "other/file"], {}
 
+    @pytest.mark.filterwarnings("ignore:Command line option --vcs-shim is DEPRECATED")
+    @parametrize("vcs_option_name", ["--vcs-shim", "--vcs"])  # type:ignore
     @pytest.mark.xfail(raises=click.exceptions.BadOptionUsage, strict=True)
-    def case_vcs_shim_missing(self) -> Tuple[List[str], Dict[str, Any]]:
-        """Test that missing shim argument is handled correctly."""
-        return ["--vcs-shim"], {}
+    def case_vcs_missing(
+        self, vcs_option_name: str
+    ) -> Tuple[List[str], Dict[str, Any]]:
+        """Test that missing vcs option is handled correctly."""
+        return [vcs_option_name], {}
 
     @pytest.mark.xfail(strict=True)
     def case_missing_file(self) -> Tuple[List[str], Dict[str, Any]]:
