@@ -1,3 +1,4 @@
+if: branch = ci
 language: python
 os: linux
 dist: xenial
@@ -21,7 +22,6 @@ install:
 script:
   - ./scripts/run_test.sh
 env:
-  if: branch = ci
   - VCS=git VERSION=2.36.0
   # - VCS=git VERSION=2.0.0
   # - VCS=git VERSION=1.7.0
