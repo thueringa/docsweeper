@@ -16,7 +16,7 @@ cache:
   - $HOME/git
   - $HOME/hg
 install:
-  - mkdir -d $HOME/tmp
+  - mkdir -p $HOME/tmp
   - ./scripts/install_vcs.sh
   - pip install poetry
   - poetry install
