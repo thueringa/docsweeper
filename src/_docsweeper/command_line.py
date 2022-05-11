@@ -53,7 +53,7 @@ class _DocsweeperGroup(_AnonymousGroup):
     def format_epilog(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         """Write the epilog into the formatter if it exists."""
         with formatter.section(
-            "Available version control shims and their default executables"
+            "Supported version control systems and their default executables"
         ):
             formatter.write_dl(
                 [
@@ -205,14 +205,17 @@ def _parse_args_decorator(f):  # type: ignore
         "vcs_command_set_type",
         "--vcs-shim",
         default=None,
-        help="a version control shim.",
+        help=(
+            f"Name of the version control system that FILE is versioned in. "
+            f"Default value: {list(command_sets.keys())[0]}"
+        ),
         type=click.Choice(list(command_sets.keys())),
         callback=_handle_vcs_command_set_type_arg,
     )
     @click.option(
         "-v",
         "--verbose",
-        help="set verbose mode.",
+        help="Set verbose mode.",
         callback=_handle_verbosity_arg,
         is_flag=True,
         expose_value=False,
@@ -220,7 +223,7 @@ def _parse_args_decorator(f):  # type: ignore
     @click.option(
         "-d",
         "--debug",
-        help="set debugging mode. Lots of messages.",
+        help="Set debugging mode. Lots of messages.",
         callback=_handle_debug_arg,
         is_flag=True,
         expose_value=False,
@@ -229,14 +232,17 @@ def _parse_args_decorator(f):  # type: ignore
         "vcs_executable",
         "-e",
         "--vcs-executable",
-        help="path of the version control executable.",
+        help=(
+            "Path of the version control executable. See below for the default value "
+            "of each supported version control system."
+        ),
         default=None,
         type=click.Path(path_type=Path),
     )
     @click.option(
         "-c",
         "--config",
-        help="specify a configuration file.",
+        help="Specify a configuration file.",
         default=None,
         type=click.Path(path_type=Path),
         callback=_handle_config_arg,
@@ -251,7 +257,7 @@ def _parse_args_decorator(f):  # type: ignore
     @click.option(
         "-V",
         "--version",
-        help="show version information.",
+        help="Show version information.",
         default=None,
         is_flag=True,
         callback=_handle_version_arg,
@@ -261,10 +267,12 @@ def _parse_args_decorator(f):  # type: ignore
         "files",
         type=click.Path(path_type=Path),
         nargs=-1,
-        metavar="FILE",
+        metavar="FILE...",
         required=True,
     )
     def wrapper(*args, **kwds):  # type:ignore
+        # This is used used by click as the short command help.
+        """Analyze FILE or multiple FILEs for outdated docstrings."""
         return f(*args, **kwds)
 
     return wrapper
