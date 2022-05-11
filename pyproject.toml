@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "docsweeper"
-version = "1.2.0"
+version = "1.2.1-dev"
 description = "A linter for your Python code base that finds potentially outdated docstrings using version control."
 authors = ["Andreas Thüring <a.thuering@gmail.com>"]
 readme = "README.rst"
