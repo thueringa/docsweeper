@@ -206,7 +206,7 @@ def _parse_args_decorator(f):  # type: ignore
         "--vcs-shim",
         default=None,
         help=(
-            f"Name of the version control system that FILE is versioned in. "
+            f"History of FILEs will be retrieved using this version control system. "
             f"Default value: {list(command_sets.keys())[0]}"
         ),
         type=click.Choice(list(command_sets.keys())),
@@ -233,8 +233,9 @@ def _parse_args_decorator(f):  # type: ignore
         "-e",
         "--vcs-executable",
         help=(
-            "Path of the version control executable. See below for the default value "
-            "of each supported version control system."
+            "the version control executable located at PATH will be used during "
+            "analysis. See below for the default value of each supported version "
+            "control system."
         ),
         default=None,
         type=click.Path(path_type=Path),
@@ -242,7 +243,7 @@ def _parse_args_decorator(f):  # type: ignore
     @click.option(
         "-c",
         "--config",
-        help="Specify a configuration file.",
+        help="Load a Docsweeper configuration file located at PATH.",
         default=None,
         type=click.Path(path_type=Path),
         callback=_handle_config_arg,

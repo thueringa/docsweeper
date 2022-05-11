@@ -56,6 +56,37 @@ file <file_config>`:
 
    $ docsweeper --vcs-shim git --vcs-executable /path/to/git source.py
 
+.. _cmdline_spec:
+
+Full Command Line Reference
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. note::
+
+    This command line reference is also available by running ``docsweeper -h``.
+
+
+Usage: ``docsweeper [OPTIONS] FILE...``
+
+Analyze ``FILE`` or multiple ``FILEs`` for outdated docstrings.
+
+Options:
+  --vcs-shim SHIM            History of FILEs will be retrieved using the
+                             version control system ``SHIM``.
+
+                             Supported values for ``SHIM``: ``git|hg``
+
+                             Default value: ``git``
+  -v, --verbose              Set verbose mode.
+  -d, --debug                Set debugging mode. Lots of messages.
+  -e, --vcs-executable PATH  the version control executable located at ``PATH``
+                             will be used during analysis.
+  -c, --config PATH          Load a Docsweeper configuration file located at
+                             ``PATH``.
+  --no-follow-rename         Do not follow renames of files.
+  -V, --version              Show version information.
+  -h, --help                 Show command line reference.
+
 Invoking Docsweeper From Python Code
 ------------------------------------
 

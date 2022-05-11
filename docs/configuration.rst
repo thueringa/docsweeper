@@ -31,7 +31,7 @@ The following options are respected by *Docsweeper* if set by the user:
     :ref:`code violation DOC100 <DOC100>` triggers.
 
     Default value: ``0``
-``no_follow_rename``
+``no_follow_rename`` : *bool*
     Follow version control history along renames of files.
 
     Default value: ``false``
@@ -52,37 +52,33 @@ The following command line options are available:
 
 .. _max_changes:
 
---max-changes MAX_CHANGES : *integer*
-    Maximum allowed changes of code since last docstring change before
-    :ref:`code violation DOC100 <DOC100>` triggers.
---no-follow-rename :
-    Follow version control history along renames of files.
---vcs VCS_TYPE : git *|* hg
-    Choose the type of version control system.
---vcs-executable VCS_EXECUTABLE : *string*
-    Path of the version control system executable.
+--max-changes MAX_CHANGES  :ref:`Code violation DOC100 <DOC100>` triggers when more
+                           than ``MAX_CHANGES`` changes to the source code have been
+                           made since the last docstring change.
+--no-follow-rename         Follow version control history along renames of files.
+--vcs VCS_TYPE             ``VCS_TYPE`` is the type of version control system used.
 
-Configuration Of Docsweeper As A Standalone Application
--------------------------------------------------------
+                           Allowed values: ``git|hg``
+--vcs-executable VCS_EXECUTABLE
+    The version control system located at ``VCS_EXECUTABLE`` will be used.
 
-The stand-alone version of *Docsweeper* is configured independently of the *Flake8* plugin
-via command line parameters or using a configuration file. Command line options always
-take precedence over values in a configuration file.
+Using Docsweeper As A Standalone Application
+--------------------------------------------
 
-Configuration Via Command Line
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The stand-alone version of *Docsweeper* can be configured independently of the *Flake8*
+plugin via :ref:`command line parameters <usage_cmdline>` or using a configuration file.
+Command line options always take precedence over values in a configuration file.
 
-A full command line reference is available by running :code:`docsweeper -h`.
 
 .. _file_config:
 
 Configuration Via File
 ~~~~~~~~~~~~~~~~~~~~~~
 
-If ``Docsweeper`` is passed the command line option :code:`--config` or :code:`-c`
-followed by the path of a configuration file, it will try to load configuration values
-from this file. The following example shows all configuration sections and the options
-they support:
+If ``Docsweeper`` is passed the command line option ``--config`` or ``-c`` followed by
+the path of a configuration file, it will try to load configuration values from this
+file. The following example shows all configuration sections and the options they
+support:
 
 [docsweeper] :
     Configuration section for general options.
