@@ -1,2 +1,1 @@
-.. include:: ../changelog.md
-             :parser: myst_parser.sphinx_
+.. include:: ../changelog.rst
