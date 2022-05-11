@@ -6,6 +6,7 @@ pwd
 if [ "$VCS" = "git" ]; then
   git_dir="$HOME"/git/"$VERSION"
   if [ ! -e "$git_dir"/git ]; then
+    echo git dir: $git_dir
     mkdir -p "$git_dir"
     git clone https://github.com/git/git.git
     cd git
