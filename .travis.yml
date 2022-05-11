@@ -17,7 +17,10 @@ cache:
   - $HOME/hg
 install:
   - mkdir -p $HOME/tmp
-  - ./scripts/install_vcs.sh
+  #- ./scripts/install_vcs.sh
+  - echo git_executable=git >> pytest.ini
+  - echo hg_executable=hg >> pytest.ini
+  - $HOME/git/2.36.0/git init test_git
   - pip install poetry
   - poetry install
 script:
