@@ -71,7 +71,12 @@ Usage: ``docsweeper [OPTIONS] FILE...``
 Analyze ``FILE`` or multiple ``FILEs`` for outdated docstrings.
 
 Options:
-  --vcs VCS                  History of FILEs will be retrieved using the
+  --vcs VCS
+                             .. note::
+
+                                This command line option was introduced in v1.2.0.
+
+                             History of FILEs will be retrieved using the
                              version control system ``VCS``.
 
                              Supported values for ``VCS``: ``git|hg``
@@ -89,7 +94,8 @@ Options:
   --vcs-shim SHIM
                              .. caution::
 
-                                DEPRECATED since v1.2.0! Use option ``--vcs`` instead.
+                                This command line option is DEPRECATED since v1.2.0!
+                                Use option ``--vcs`` instead.
 
                              History of FILEs will be retrieved using the
                              version control system ``SHIM``.
