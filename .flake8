@@ -21,4 +21,3 @@ rst-directives =
 # darglint options
 strictness=short
 docstring_style=sphinx
-

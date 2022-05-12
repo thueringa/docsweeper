@@ -21,7 +21,7 @@ from tests.conftest import Repository
 class CasesTokenHistory:
     """Test cases for :func:`test_documented_token_history`."""
 
-    @parametrize(  # type:ignore
+    @parametrize(
         "repo,config,expected",
         [
             (

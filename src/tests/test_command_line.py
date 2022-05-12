@@ -27,7 +27,7 @@ from tests.conftest import _VCSHelper
 class CasesArguments:
     """Test cases for :func:`.test_argparser`."""
 
-    @parametrize("config", [fixture_ref("command_set_test_config")])  # type:ignore
+    @parametrize("config", [fixture_ref("command_set_test_config")])
     def case_default(
         self,
         config: Tuple[Type[VCSCommandSet], VCSCommandSetConfig, Type[_VCSHelper]],
@@ -42,8 +42,8 @@ class CasesArguments:
             "vcs_command_set_config": default_config,
         }
 
-    @parametrize("config", [fixture_ref("command_set_test_config")])  # type:ignore
-    @parametrize("option", ["--debug", "-d", "--verbose", "-v"])  # type:ignore
+    @parametrize("config", [fixture_ref("command_set_test_config")])
+    @parametrize("option", ["--debug", "-d", "--verbose", "-v"])
     def case_single_option(
         self,
         option: str,
@@ -59,7 +59,7 @@ class CasesArguments:
             "vcs_command_set_config": default_config,
         }
 
-    @parametrize("config", [fixture_ref("command_set_test_config")])  # type:ignore
+    @parametrize("config", [fixture_ref("command_set_test_config")])
     def case_no_follow(
         self,
         config: Tuple[Type[VCSCommandSet], VCSCommandSetConfig, Type[_VCSHelper]],
@@ -87,7 +87,7 @@ class CasesArguments:
             },
         )
 
-    @parametrize("config", [fixture_ref("command_set_test_config")])  # type:ignore
+    @parametrize("config", [fixture_ref("command_set_test_config")])
     def case_consume_strings(
         self,
         config: Tuple[Type[VCSCommandSet], VCSCommandSetConfig, Type[_VCSHelper]],
@@ -103,8 +103,8 @@ class CasesArguments:
         )
 
     @pytest.mark.filterwarnings("ignore:Command line option --vcs-shim is DEPRECATED")
-    @parametrize("vcs_option_name", ["--vcs-shim", "--vcs"])  # type:ignore
-    @parametrize("config", [fixture_ref("command_set_test_config")])  # type:ignore
+    @parametrize("vcs_option_name", ["--vcs-shim", "--vcs"])
+    @parametrize("config", [fixture_ref("command_set_test_config")])
     def case_vcs(
         self,
         vcs_option_name: str,
@@ -116,7 +116,7 @@ class CasesArguments:
         }
 
     @pytest.mark.filterwarnings("ignore:Command line option --vcs-shim is DEPRECATED")
-    @parametrize("vcs_option_name", ["--vcs-shim", "--vcs"])  # type:ignore
+    @parametrize("vcs_option_name", ["--vcs-shim", "--vcs"])
     @pytest.mark.xfail(raises=click.exceptions.BadParameter, strict=True)
     def case_vcs_unsupported(
         self, vcs_option_name: str
@@ -125,7 +125,7 @@ class CasesArguments:
         return [vcs_option_name, "cat", "other/file"], {}
 
     @pytest.mark.filterwarnings("ignore:Command line option --vcs-shim is DEPRECATED")
-    @parametrize("vcs_option_name", ["--vcs-shim", "--vcs"])  # type:ignore
+    @parametrize("vcs_option_name", ["--vcs-shim", "--vcs"])
     @pytest.mark.xfail(raises=click.exceptions.BadOptionUsage, strict=True)
     def case_vcs_missing(
         self, vcs_option_name: str
@@ -161,7 +161,7 @@ class CasesArguments:
         """Test that passing no arguments at all is handled correctly."""
         return [], {}
 
-    @parametrize("config", [fixture_ref("command_set_test_config")])  # type:ignore
+    @parametrize("config", [fixture_ref("command_set_test_config")])
     def case_config(
         self,
         tmp_path: Path,
@@ -189,7 +189,7 @@ class CasesArguments:
             {"vcs_command_set_config": expected_config},
         )
 
-    @parametrize("config", [fixture_ref("command_set_test_config")])  # type:ignore
+    @parametrize("config", [fixture_ref("command_set_test_config")])
     def case_config_change_shim(
         self,
         tmp_path: Path,
@@ -242,7 +242,7 @@ def test_argparser(arguments: List[str], expected: Dict[str, Any]) -> None:
 class CasesVerbosity:
     """Test cases for :func:`.test_handle_verbosity_args`."""
 
-    @parametrize(  # type:ignore
+    @parametrize(
         "arguments, expected",
         [
             (["--verbose", "file"], logging.INFO),

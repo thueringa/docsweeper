@@ -56,7 +56,7 @@ class CaseGetFile:
             list(map(lambda x: (x[0], Path("nonexisting_file")), revisions)),
         )
 
-    @parametrize(  # type:ignore
+    @parametrize(
         "revision",
         [
             pytest.param(
@@ -108,7 +108,7 @@ class CaseGetAllRevisions:
         test_repo = shim[0]
         return (test_repo, shim[1], test_repo.revisions[0][1])
 
-    @parametrize(  # type:ignore
+    @parametrize(
         "file_name",
         [
             pytest.param(
@@ -163,9 +163,7 @@ class CaseVCSRoot:
         test_repo = shim[0]
         return test_repo, shim[1], "nonexisting_folder/nonexisting_file"
 
-    @parametrize(  # type:ignore
-        "repo", [fixture_ref("subfolder_repo")]
-    )
+    @parametrize("repo", [fixture_ref("subfolder_repo")])
     def case_subfolder(self, repo: Repository) -> Tuple[Repository, VCSShim, str]:
         """Test on a repository with subfolder."""
         return (
@@ -194,7 +192,7 @@ def test_vcs_root(repo: Repository, shim: VCSShim, path: Union[str, Path]) -> No
     assert shim.vcs_root(constructed_path) == repo.repository_path
 
 
-@parametrize(  # type:ignore
+@parametrize(
     "repo", [fixture_ref("moved_file_repo"), fixture_ref("moved_file_subfolder_repo")]
 )
 def test_get_old_name(repo: Repository) -> None:
