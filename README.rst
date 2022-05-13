@@ -2,6 +2,16 @@
  Docsweeper
 ============
 
+.. image:: https://img.shields.io/pypi/pyversions/docsweeper?style=flat-square   :alt: PyPI - Python Version
+
+.. image:: https://img.shields.io/pypi/v/docsweeper?style=flat-square   :alt: PyPI
+
+.. image:: https://readthedocs.org/projects/docsweeper/badge/?version=stable
+   :target: https://docsweeper.readthedocs.io/en/stable/?badge=stable
+   :alt: Documentation Status
+
+.. image:: https://img.shields.io/pypi/l/docsweeper?style=flat-square   :alt: PyPI - License
+
 *Docsweeper* is a linter for version controlled *Python* code bases that finds
 potentially outdated docstrings. *Docsweeper* interacts with the version control system
 to retrieve a full revision history of a given *Python* source file. For every code
