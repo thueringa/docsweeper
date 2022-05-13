@@ -102,36 +102,25 @@ class CasesArguments:
             },
         )
 
-    @pytest.mark.filterwarnings("ignore:Command line option --vcs-shim is DEPRECATED")
-    @parametrize("vcs_option_name", ["--vcs-shim", "--vcs"])
     @parametrize("config", [fixture_ref("command_set_test_config")])
     def case_vcs(
         self,
-        vcs_option_name: str,
         config: Tuple[Type[VCSCommandSet], VCSCommandSetConfig, Type[_VCSHelper]],
     ) -> Tuple[List[str], Dict[str, Any]]:
         """Test that vcs option is handled correctly."""
-        return [vcs_option_name, str(config[0].name), "other/file"], {
+        return ["--vcs", str(config[0].name), "other/file"], {
             "vcs_command_set_type": config[0],
         }
 
-    @pytest.mark.filterwarnings("ignore:Command line option --vcs-shim is DEPRECATED")
-    @parametrize("vcs_option_name", ["--vcs-shim", "--vcs"])
     @pytest.mark.xfail(raises=click.exceptions.BadParameter, strict=True)
-    def case_vcs_unsupported(
-        self, vcs_option_name: str
-    ) -> Tuple[List[str], Dict[str, Any]]:
+    def case_vcs_unsupported(self) -> Tuple[List[str], Dict[str, Any]]:
         """Test that passing unsupported vcs is handled correctly."""
-        return [vcs_option_name, "cat", "other/file"], {}
+        return ["--vcs", "cat", "other/file"], {}
 
-    @pytest.mark.filterwarnings("ignore:Command line option --vcs-shim is DEPRECATED")
-    @parametrize("vcs_option_name", ["--vcs-shim", "--vcs"])
     @pytest.mark.xfail(raises=click.exceptions.BadOptionUsage, strict=True)
-    def case_vcs_missing(
-        self, vcs_option_name: str
-    ) -> Tuple[List[str], Dict[str, Any]]:
+    def case_vcs_missing(self) -> Tuple[List[str], Dict[str, Any]]:
         """Test that missing vcs option is handled correctly."""
-        return [vcs_option_name], {}
+        return ["--vcs"], {}
 
     @pytest.mark.xfail(strict=True)
     def case_missing_file(self) -> Tuple[List[str], Dict[str, Any]]:

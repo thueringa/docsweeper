@@ -91,18 +91,6 @@ Options:
   -d, --debug                Set debugging mode. Lots of messages.
 
   -V, --version              Show version information.
-  --vcs-shim SHIM
-                             .. caution::
-
-                                This command line option is DEPRECATED since v1.2.0!
-                                Use option ``--vcs`` instead.
-
-                             History of FILEs will be retrieved using the
-                             version control system ``SHIM``.
-
-                             Supported values for ``SHIM``: ``git|hg``
-
-                             Default value: ``git``
   -h, --help                 Show command line reference.
 
 

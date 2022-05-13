@@ -5,7 +5,6 @@ import configparser
 import logging
 import multiprocessing.dummy
 import sys
-import warnings
 from functools import wraps
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Type
@@ -187,19 +186,6 @@ def _create_default_ini_config(
     return config
 
 
-def _handle_deprecated_vcs_shim_arg(
-    ctx: click.Context, param: click.Option, value: Optional[str]
-) -> Any:
-    if value:
-        warning = (
-            "Command line option --vcs-shim is DEPRECATED since Docsweeper v1.2.0! Use "
-            "--vcs instead."
-        )
-        warnings.warn(warning, FutureWarning)
-        return _handle_vcs_command_set_type_arg(ctx, _vcs_option, value)
-    return None
-
-
 class _VCSOption(click.Option):
 
     _help_string = (
@@ -294,11 +280,6 @@ _version_option = click.Option(
     callback=_handle_version_arg,
     expose_value=False,
 )
-_vcs_shim_option = _VCSOption(
-    ["vcs_command_set_type", "--vcs-shim"],
-    _handle_deprecated_vcs_shim_arg,  # type: ignore
-    'DEPRECATED since v1.2.0! Use option "--vcs" instead. ',
-)
 
 
 def _parse_args_decorator(f):  # type: ignore
@@ -323,7 +304,6 @@ def _parse_args_decorator(f):  # type: ignore
             _verbose_option,
             _debug_option,
             _version_option,
-            _vcs_shim_option,
         ],
     )
     @click.argument(
