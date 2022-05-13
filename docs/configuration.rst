@@ -31,7 +31,7 @@ The following options are respected by *Docsweeper* if set by the user:
     :ref:`code violation DOC100 <DOC100>` triggers.
 
     Default value: ``0``
-``no_follow_rename`` : *bool*
+``no_follow_rename`` : ``true`` *|* ``false``
     Follow version control history along renames of files.
 
     Default value: ``false``
@@ -76,18 +76,19 @@ Configuration Via File
 ~~~~~~~~~~~~~~~~~~~~~~
 
 If ``Docsweeper`` is passed the command line option ``--config`` or ``-c`` followed by
-the path of a configuration file, it will try to load configuration values from this
-file. The following example shows all configuration sections and the options they
-support:
+the path of a `configuration file
+<https://docs.python.org/3/library/configparser.html#supported-ini-file-structure>`_, it
+will try to load configuration values from this file. The following example shows all
+configuration sections and the options they support:
 
 [docsweeper] :
     Configuration section for general options.
 
-    vcs : *git | hg*
+    vcs : ``git`` *|* ``hg``
         Choose the type of version control system.
 
         Default value ``git``
-    follow_rename : *bool*
+    follow_rename : ``true`` *|* ``false``
         Follow version control history along renames of files.
 
         Default value: ``true``

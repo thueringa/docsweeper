@@ -79,7 +79,7 @@ Options:
                              History of FILEs will be retrieved using the
                              version control system ``VCS``.
 
-                             Supported values for ``VCS``: ``git|hg``
+                             Supported values for ``VCS``: ``git`` *|* ``hg``
 
                              Default value: ``git``
   -e, --vcs-executable PATH  the version control executable located at ``PATH``
