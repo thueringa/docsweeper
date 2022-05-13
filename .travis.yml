@@ -12,7 +12,9 @@ python:
   # - "3.10"
 install:
   - pip install poetry
-  - poetry install
+  - poetry install --no-dev
+  # install test requirements manually to optimize travis resource usage:
+  - poetry run pip install pytest pytest_cases faker 
   - echo git_executable=git >> pytest.ini
   - echo hg_executable=hg >> pytest.ini
 script:
