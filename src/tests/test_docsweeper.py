@@ -1,7 +1,6 @@
 """Tests for :mod:`_docsweeper.docsweeper`."""
 from __future__ import annotations
 
-import copy
 from pathlib import Path
 from typing import Optional, Tuple
 

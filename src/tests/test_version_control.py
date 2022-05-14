@@ -10,7 +10,7 @@ from faker import Faker
 from pytest_cases import fixture, fixture_ref, parametrize, parametrize_with_cases
 
 from _docsweeper.util import RevisionIdentifier
-from _docsweeper.version_control import VCSCommandSetConfig, VCSShim, command_sets
+from _docsweeper.version_control import VCSCommandSetConfig, VCSShim
 from tests.conftest import Repository
 
 faker = Faker()

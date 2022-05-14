@@ -9,8 +9,6 @@ provides all avaible repositories in succession to a single test function.
 from __future__ import annotations
 
 import configparser
-import os
-import sys
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import List, NamedTuple, Optional, Tuple, Type

@@ -189,7 +189,7 @@ def _create_default_ini_config(
 class _VCSOption(click.Option):
 
     _help_string = (
-        f"History of FILEs will be retrieved using this version control system. "
+        "History of FILEs will be retrieved using this version control system. "
     )
 
     def __init__(
