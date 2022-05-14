@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, Generic, List, NamedTuple, Optional, Tuple, Type, TypeVar
 
-from _docsweeper.util import RevisionIdentifier, call_subprocess
+from _docsweeper.util import ExecutableError, RevisionIdentifier, call_subprocess
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +70,22 @@ class IncompleteConfigurationError(KeyError):
     def __init__(self, key: str) -> None:
         """Key *key* is missing in configuration."""
         super().__init__(f"Missing configuration value {key}.")
+
+
+class VCSExecutableError(Exception):
+    """Raised when there is an issue with the chosen version control executable.
+
+    For example, if the executable does not exist or is otherwise not executable.
+
+    """
+
+    def __init__(self, vcs: str, executable: str) -> None:
+        """Raise an exception with *executable* for version control system *vcs*."""
+        message = (
+            f"{str(executable)} is not valid as an executable for version control "
+            "system {vcs}"
+        )
+        super().__init__(message)
 
 
 # ======================================
@@ -585,8 +601,8 @@ class VCSShim:
         """
         self._vcs_command_set = vcs_command_set(vcs_command_set_config)
 
-    @staticmethod
     def _call_command(
+        self,
         command: _VCSCommand[_CommandError, _CommandResult, _CommandArguments],
         cwd: Optional[Path],
         command_arguments: _CommandArguments,
@@ -597,7 +613,7 @@ class VCSShim:
         :param cwd: change working directory to this during execution. Do not change
             working directory if *cwd* is `None`.
         :param command_arguments: dictionary of arguments for the command
-
+        :raises VCSExecutableError: if there is an issue with the chosen vcs executable
         :returns: the result of the command.
         """
         command_line_args = command.tokenize_arguments(command_arguments)
@@ -607,6 +623,10 @@ class VCSShim:
         except subprocess.CalledProcessError as exc:
             error = command.handle_error(exc)
             result = ""
+        except ExecutableError as exception:
+            raise VCSExecutableError(
+                self._vcs_command_set.name, exception.executable
+            ) from exception
         return command.handle_result(result, error)
 
     def vcs_root(self, path: Path) -> Path:

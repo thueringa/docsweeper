@@ -33,6 +33,11 @@ Dependencies
 
 - drop dependency on ``typing_extensions`` for Python 3.7
 
+Miscellaneous
+-------------
+
+- improve error handling
+
 v1.2.0 (released May 11, 2022)
 ==============================
 

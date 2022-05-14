@@ -20,6 +20,18 @@ TokenHistory = Dict[str, "DocumentedToken"]
 logger = logging.getLogger(__name__)
 
 
+class ParserError(Exception):
+    """Raised when a code file could not be parsed."""
+
+    def __init__(self, file_: Path, error: SyntaxError) -> None:
+        """*file_* was not parseable due to underlying parser error  *error*."""
+        message = (
+            f"Could not parse file '{str(file_)}'. Reason: {error.msg}. "
+            f"line number: {error.lineno}, text: '{error.text}'"
+        )
+        super().__init__(message)
+
+
 class DocumentedToken(NamedTuple):
     """Data class for a python code token."""
 
@@ -57,6 +69,9 @@ def analyze_file(
     :param vcs_command_set_type: type of the version control system to use
     :param vcs_command_set_config: version control configuration
     :param path: points to the code file in the file system
+    :raises VCSExecutableError: if there is an unexpected error with the executable
+        set in *vcs_command_set_config*
+    :raises ParserError: if there is an unexpected error parsing *path*
     :returns: each entry of the list consists of the documented token, and its
         docstring history statistic
 
@@ -257,15 +272,19 @@ class _DocumentedTokenVisitor(ast.NodeVisitor):
 
         :param path: the path of the python code
         :param data: if set, do not read python code from *path* and use *data* instead
-
+        :raises ParserError: if *path* is not parseable
         """
         if data is None:
             data = read_file(path)
+
         self._data = data
         self._lines = self._data.splitlines()
         self._current_name = [path.stem]
         self.documented_tokens = {}
-        root_node = ast.parse(data, filename=path.name)
+        try:
+            root_node = ast.parse(data, filename=path.name)
+        except SyntaxError as exception:
+            raise ParserError(path, exception) from exception
         self.generic_visit(root_node)
         del self._data
         del self._current_name

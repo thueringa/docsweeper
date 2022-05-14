@@ -41,3 +41,6 @@
    Dictionary of all supported command sets and their default configuration.
 
    .. note:: This object is exported publicly as :class:`docsweeper.command_sets`.
+
+.. autoclass:: _docsweeper.version_control.VCSExecutableError
+   :exclude-members: __new__

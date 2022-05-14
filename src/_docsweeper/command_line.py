@@ -404,6 +404,7 @@ def run(parsed_args: _ParsedArgs, **kwargs) -> None:  # type:ignore
     Registered as a callback to :func:`parse_args`.
 
     :param parsed_args: command configuration as returned by :func:`parse_args`
+    :raises SystemExit: if there occurs an unrecoverable error during analysis
 
     # noqa: DAR101
 
@@ -412,7 +413,11 @@ def run(parsed_args: _ParsedArgs, **kwargs) -> None:  # type:ignore
 
     def do(
         file_: Path,
-    ) -> Tuple[Path, List[Tuple[DocumentedToken, DocumentedTokenStatistic]]]:
+    ) -> Tuple[
+        Path,
+        Optional[List[Tuple[DocumentedToken, DocumentedTokenStatistic]]],
+        Optional[Exception],
+    ]:
         """Return statistics for all tokens in *file_*.
 
         :param file_: path of the file
@@ -422,18 +427,24 @@ def run(parsed_args: _ParsedArgs, **kwargs) -> None:  # type:ignore
               corresponding docstring statistic
 
         """
-        return (
-            file_,
-            analyze_file(
-                parsed_args["vcs_command_set_type"],
-                parsed_args["vcs_command_set_config"],
-                file_.resolve(),
-            ),
-        )
+        try:
+            return (
+                file_,
+                analyze_file(
+                    parsed_args["vcs_command_set_type"],
+                    parsed_args["vcs_command_set_config"],
+                    file_.resolve(),
+                ),
+                None,
+            )
+        except Exception as exception:
+            return file_, None, exception
 
     with multiprocessing.dummy.Pool() as pool:
         analysis_results = pool.map(do, parsed_args["files"])
-    for file_, result in analysis_results:
+    for file_, result, error in analysis_results:
+        if error:
+            raise SystemExit(f"Error analyzing '{file_}': {error}") from error
         for token, token_history in result:
             result_handler.handle_result(file_, token, token_history)
 
@@ -448,8 +459,7 @@ def _get_vcs_type_status(
         if config_vcs in command_sets.keys():
             return command_sets[config_vcs][0]
         else:
-            print(f"Unknown version control system {config_vcs}", file=sys.stderr)
-            sys.exit(2)
+            raise SystemExit(f"Unknown version control system {config_vcs}")
     return command_sets[list(command_sets)[0]][0]
 
 

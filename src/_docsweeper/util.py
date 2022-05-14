@@ -12,6 +12,17 @@ RevisionIdentifier = str
 """Type alias for a revision identifier."""
 
 
+class ExecutableError(Exception):
+    """Raised when the executable is not found or is not executable."""
+
+    executable: str
+
+    def __init__(self, executable: str):
+        """Raise an error that denotes a problem with *executable*."""
+        self.executable = executable
+        super().__init__(f"Invalid executable {executable}")
+
+
 def call_subprocess(command: List[str], cwd: Optional[Path] = None) -> str:
     """Wrap calls to :func:`subprocess.run`.
 
@@ -23,13 +34,18 @@ def call_subprocess(command: List[str], cwd: Optional[Path] = None) -> str:
         the current directory is used.
     :raises subprocess.CalledProcessError: The underlying process has exited
         with a non-zero exit code.
+    :raises ExecutableError: when the command passed to :func:`subprocess.run` is not
+        found or is otherwise not executable
     :returns: The text that was written to standard output by running the command.
 
     """
     logger.debug(f'Running command {" ".join(command)} in directory {cwd}')
-    result = subprocess.run(
-        command, cwd=cwd, check=True, capture_output=True, text=True
-    )
+    try:
+        result = subprocess.run(
+            command, cwd=cwd, check=True, capture_output=True, text=True
+        )
+    except (FileNotFoundError, PermissionError) as exception:
+        raise ExecutableError(command[0]) from exception
     return result.stdout
 
 
