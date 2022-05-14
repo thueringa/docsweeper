@@ -12,6 +12,10 @@
 
 .. autoclass:: _docsweeper.util.V
    :exclude-members: __new__, __init__
+
 .. autoclass:: _docsweeper.util.Cache
    :members:
+   :exclude-members: __new__
+
+.. autoclass:: _docsweeper.util.ExecutableError
    :exclude-members: __new__

@@ -2,18 +2,23 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Type
 
 import pytest
 from faker import Faker
 from pytest_cases import fixture_ref, parametrize, parametrize_with_cases
 
 from _docsweeper.docsweeper import (
+    ParserError,
     _DocumentedTokenVisitor,
     _get_documented_tokens,
     analyze_file,
 )
-from _docsweeper.version_control import VCSCommandSetConfig
+from _docsweeper.version_control import (
+    VCSCommandSet,
+    VCSCommandSetConfig,
+    VCSExecutableError,
+)
 from tests.conftest import Repository
 
 
@@ -155,3 +160,68 @@ def test_token_visitor_generates_correct_token_attributes(
     for element_name, element in elements.items():
         assert element_name in visitor.documented_tokens
         assert visitor.documented_tokens[element_name].docstring == element["docstring"]
+
+
+class _CasesTestAnalyzeFilePathErrors:
+    @pytest.mark.xfail(raises=FileNotFoundError, strict=True)
+    def case_nonexisting_file(
+        self, test_repo: Repository
+    ) -> Tuple[Path, Type[VCSCommandSet], VCSCommandSetConfig]:
+        return (
+            Path("nonexisting_file"),
+            test_repo.vcs_command_set_type,
+            test_repo.vcs_command_set_config,
+        )
+
+    @pytest.mark.xfail(raises=ParserError, strict=True)
+    def case_invalid_python_file(
+        self, test_repo: Repository, tmpdir_factory: pytest.TempdirFactory
+    ) -> Tuple[Path, Type[VCSCommandSet], VCSCommandSetConfig]:
+        root = tmpdir_factory.mktemp("temp")
+        file_ = Path(root, "invalid.py")
+        with open(file_, "w") as writer:
+            writer.write("definitely not(python:2='}")
+        return (
+            file_,
+            test_repo.vcs_command_set_type,
+            test_repo.vcs_command_set_config,
+        )
+
+    @pytest.mark.xfail(raises=VCSExecutableError, strict=True)
+    def case_nonexisting_executable(
+        self, test_repo: Repository
+    ) -> Tuple[Path, Type[VCSCommandSet], VCSCommandSetConfig]:
+        changed_config = test_repo.vcs_command_set_config.merge(
+            VCSCommandSetConfig(executable=Path("nonexisting"))
+        )
+        return (
+            Path(test_repo.repository_path, test_repo.revisions[0][1]),
+            test_repo.vcs_command_set_type,
+            changed_config,
+        )
+
+    @pytest.mark.xfail(raises=VCSExecutableError, strict=True)
+    def case_nonexecutable_executable(
+        self, test_repo: Repository, tmpdir_factory: pytest.TempdirFactory
+    ) -> Tuple[Path, Type[VCSCommandSet], VCSCommandSetConfig]:
+        root = tmpdir_factory.mktemp("temp")
+        file_ = Path(root, "nonexecutable")
+        file_.touch()
+        changed_config = test_repo.vcs_command_set_config.merge(
+            VCSCommandSetConfig(executable=file_)
+        )
+        return (
+            Path(test_repo.repository_path, test_repo.revisions[0][1]),
+            test_repo.vcs_command_set_type,
+            changed_config,
+        )
+
+
+@parametrize_with_cases(
+    "path,vcs_type,vcs_config", cases=_CasesTestAnalyzeFilePathErrors
+)
+def test_analyze_file_errors(
+    path: Path, vcs_type: Type[VCSCommandSet], vcs_config: VCSCommandSetConfig
+) -> None:
+    """Test :func:`docsniffer.analyze_file` with wrong files and executables."""
+    analyze_file(vcs_type, vcs_config, path)

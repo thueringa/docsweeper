@@ -21,3 +21,6 @@
 .. autofunction:: _docsweeper.docsweeper.analyze_file
 
    .. note:: This function is exported publicly as :class:`docsweeper.analyze_file`.
+
+.. autoclass:: _docsweeper.docsweeper.ParserError
+   :exclude-members: __new__
