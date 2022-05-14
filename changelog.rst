@@ -25,8 +25,8 @@
     Miscellaneous
     -------------
 
-v1.2.1 (in development)
-=======================
+v1.2.1 (released May 14, 2022)
+==============================
 
 Dependencies
 ------------
