@@ -4,15 +4,9 @@ from __future__ import annotations
 import logging
 import re
 import subprocess
-import sys
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, Generic, List, NamedTuple, Optional, Tuple, Type, TypeVar
-
-if sys.version_info < (3, 8):
-    from typing_extensions import TypedDict
-else:
-    from typing import TypedDict
 
 from _docsweeper.util import RevisionIdentifier, call_subprocess
 
