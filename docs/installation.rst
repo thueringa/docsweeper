@@ -7,7 +7,7 @@ required as well:
 - `click <https://click.palletsprojects.com/en/8.1.x/>`_ v8.1.0 or newer.
 
 *Docsweeper* is available on `PyPI <https://pypi.org/project/docsweeper/>`_. Install it
- with `pip <https://pip.pypa.io/>`_ to take care of dependencies automatically:
+with `pip <https://pip.pypa.io/>`_ to take care of dependencies automatically:
 
 .. code-block:: console
 
