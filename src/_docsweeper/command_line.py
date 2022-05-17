@@ -26,10 +26,16 @@ from _docsweeper import configure_logger
 from _docsweeper.docsweeper import (
     DocumentedToken,
     DocumentedTokenStatistic,
+    ParserError,
     analyze_file,
 )
 from _docsweeper.result_handler import ClickResultHandler
-from _docsweeper.version_control import VCSCommandSet, VCSCommandSetConfig, command_sets
+from _docsweeper.version_control import (
+    VCSCommandSet,
+    VCSCommandSetConfig,
+    VCSExecutableError,
+    command_sets,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -94,6 +100,10 @@ class _ParsedArgs(TypedDict):
     """configuration for the version control command set"""
     files: Sequence[Path]
     """list of files that are to be analyzed"""
+    debug: Optional[bool]
+    """whether debug mode is activated"""
+    verbose: Optional[bool]
+    """whether verbose mode is activated"""
 
 
 def _handle_vcs_command_set_type_arg(
@@ -106,16 +116,18 @@ def _handle_vcs_command_set_type_arg(
 
 def _handle_verbosity_arg(
     ctx: click.Context, param: click.Option, value: Optional[bool]
-) -> None:
+) -> Optional[bool]:
     if value:
         configure_logger(logging.INFO)
+    return value
 
 
 def _handle_debug_arg(
     ctx: click.Context, param: click.Option, value: Optional[bool]
-) -> None:
+) -> Optional[bool]:
     if value:
         configure_logger(logging.DEBUG)
+    return value
 
 
 def _handle_config_arg(
@@ -271,7 +283,6 @@ _verbose_option = click.Option(
     help="Set verbose mode.",
     callback=_handle_verbosity_arg,
     is_flag=True,
-    expose_value=False,
 )
 _debug_option = click.Option(
     [
@@ -281,7 +292,6 @@ _debug_option = click.Option(
     help="Set debugging mode. Lots of messages.",
     callback=_handle_debug_arg,
     is_flag=True,
-    expose_value=False,
 )
 _version_option = click.Option(
     [
@@ -348,6 +358,8 @@ def parse_args(
     vcs_executable: Optional[Path],
     config: configparser.ConfigParser,
     no_follow_rename: Optional[bool],
+    verbose: Optional[bool],
+    debug: Optional[bool],
 ) -> _ParsedArgs:
     """Validate command line arguments and transform them into a configuration object.
 
@@ -357,6 +369,8 @@ def parse_args(
     :param vcs_executable: location of the executable of the version control system
     :param config: .ini configuration file
     :param no_follow_rename: if ``True``, do not follow renames
+    :param debug: state of debug mode
+    :param verbose: state of verbose mode
     :returns: the configuration object
 
     """
@@ -375,6 +389,8 @@ def parse_args(
         vcs_command_set_config=vcs_command_set_config,
         vcs_command_set_type=vcs_command_set_type,
         files=list(files),
+        verbose=verbose,
+        debug=debug,
     )
     return parsed_args
 
@@ -405,8 +421,10 @@ def run(parsed_args: _ParsedArgs, **kwargs) -> None:  # type:ignore
 
     :param parsed_args: command configuration as returned by :func:`parse_args`
     :raises SystemExit: if there occurs an unrecoverable error during analysis
+    :raises Exception: re-raise unexpected expections if debug mode is activated in
+        *parsed_args*. Only print error message otherwise.
 
-    # noqa: DAR101
+    # noqa: DAR101,DAR401
 
     """
     result_handler = ClickResultHandler()
@@ -444,7 +462,19 @@ def run(parsed_args: _ParsedArgs, **kwargs) -> None:  # type:ignore
         analysis_results = pool.map(do, parsed_args["files"])
     for file_, result, error in analysis_results:
         if error:
-            raise SystemExit(f"Error analyzing '{file_}': {error}") from error
+            if isinstance(error, (VCSExecutableError, ParserError)):
+                # expected errors
+                raise SystemExit(f"Error analyzing '{file_}': {error}") from error
+            else:
+                # unexpected errors
+                message = f"Unexpected error occured: {error}. "
+                print(message, file=sys.stderr)
+                if parsed_args["debug"]:
+                    raise error
+                else:
+                    raise SystemExit(
+                        "Run command with option '-d/--debug' for full stack trace."
+                    )
         for token, token_history in result:
             result_handler.handle_result(file_, token, token_history)
 

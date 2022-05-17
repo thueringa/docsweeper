@@ -25,6 +25,13 @@
     Miscellaneous
     -------------
 
+v1.2.4 (in development)
+=======================
+
+Miscellaneous
+-------------
+- improve error messages for CLI users
+
 v1.2.3 (released May 17, 2022)
 ==============================
 
