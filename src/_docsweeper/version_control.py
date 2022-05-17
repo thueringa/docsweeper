@@ -279,7 +279,7 @@ class GitCommandSet(VCSCommandSet):
                 str(self._executable),
                 "cat-file",
                 "-p",
-                f"{revision}:{str(relative_path)}",
+                f"{revision}:{relative_path.as_posix()}",
             ]
 
         @staticmethod
@@ -373,7 +373,7 @@ class GitCommandSet(VCSCommandSet):
             repository_path: Path = kwargs["repository_path"]
             relative_path: Path = path.relative_to(repository_path)
             pattern = re.compile(
-                rf"^R\d+\W+(?P<old_name>.*?)\W+{re.escape(str(relative_path))}$",
+                rf"^R\d+\W+(?P<old_name>.*?)\W+{re.escape(relative_path.as_posix())}$",
                 re.MULTILINE,
             )
             match = re.search(pattern, result)
@@ -545,7 +545,7 @@ class MercurialCommandSet(VCSCommandSet):
             relative_path: Path = path.relative_to(repository_path)
             pattern = re.compile(
                 r"^rename from (?P<old_name>.*)$\n"
-                rf"rename to {re.escape(str(relative_path))}",
+                rf"rename to {re.escape(relative_path.as_posix())}",
                 re.MULTILINE,
             )
             match = re.search(pattern, result)

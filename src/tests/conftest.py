@@ -251,7 +251,7 @@ class _GitHelper(_VCSHelper):
                 "log",
                 "--follow",
                 "--format=%H",
-                str(file_name),
+                file_name.as_posix(),
             ],
             cwd=repository_path,
         )
@@ -259,7 +259,7 @@ class _GitHelper(_VCSHelper):
 
     def add_file(self, code_file: Path, repository_path: Path) -> None:
         call_subprocess(
-            [str(self.executable), "add", str(code_file)],
+            [str(self.executable), "add", code_file.as_posix()],
             cwd=repository_path,
         )
 
@@ -274,7 +274,7 @@ class _GitHelper(_VCSHelper):
                 str(self.executable),
                 "--no-pager",
                 "show",
-                f"{revision}:{str(file_name)}",
+                f"{revision}:{file_name.as_posix()}",
             ],
             cwd=repository_path,
         ).rstrip()
@@ -286,7 +286,12 @@ class _GitHelper(_VCSHelper):
         file_to: Path,
     ) -> None:
         call_subprocess(
-            [str(self.executable), "mv", f"{str(file_from)}", f"{str(file_to)}"],
+            [
+                str(self.executable),
+                "mv",
+                f"{file_from.as_posix()}",
+                f"{file_to.as_posix()}",
+            ],
             cwd=repository_path,
         )
 

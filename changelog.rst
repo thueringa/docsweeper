@@ -40,6 +40,14 @@ Upgrading from Docsweeper v1.x
 - Replace usage of command line option ``--vcs-shim`` with ``--vcs``. Parameter
   signature of this option is unchanged from ``--vcs-shim``.
 
+v1.2.2 (in development)
+===
+
+Bugfixes
+--------
+
+- fix Windows build
+
 v1.2.1 (released May 14, 2022)
 ==============================
 

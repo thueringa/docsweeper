@@ -18,13 +18,14 @@ base.
 *Docsweeper* can be used as a :ref:`stand-alone application <usage_cmdline>` or as a
 :ref:`plugin <usage_plugin>` for the `Flake8 <https://flake8.pycqa.org/en/latest/>`_
 linter.
+Compatibility
+=============
 
-Which Version Control Systems Does Docsweeper Support?
-======================================================
+*Docsweeper* supports Linux, Mac, and Windows platforms that are compatible with Python
+3.7 or newer. In addition to a working Python installation, you will also need at least
+one of the version control systems you intend to use *Docsweeper* with:
 
-*Docsweeper* supports the following version control systems:
-
-#. `Git <https://git-scm.com/>`_ v1.7.0 or newer, and
+#. `Git <https://git-scm.com/>`_ v1.7.0 or newer, and/or
 #. `Mercurial <https://www.mercurial-scm.org/>`_ v5.2 or newer. This is the the first
    release of *Mercurial* with `official support
    <https://www.mercurial-scm.org/wiki/Python3>`_ for *Python* 3.
