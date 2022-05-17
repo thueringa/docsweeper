@@ -18,6 +18,14 @@
    :alt: PyPI - License
    :target: https://pypi.org/project/docsweeper/
 
+.. image:: https://img.shields.io/travis/com/thueringa/docsweeper?style=flat-square
+   :alt: Travis (.com)
+   :target: https://app.travis-ci.com/github/thueringa/docsweeper
+
+.. image:: https://img.shields.io/appveyor/build/AndreasThring/docsweeper
+   :alt: AppVeyor
+   :target: https://ci.appveyor.com/project/AndreasThring/docsweeper
+
 *Docsweeper* is a linter for version controlled *Python* code bases that finds
 potentially outdated docstrings in your source files. For every code token in the file
 that has a docstring (see `PEP 257 <https://peps.python.org/pep-0257/>`_), *Docsweeper*
