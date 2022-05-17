@@ -2,6 +2,9 @@ skip_non_tags: true
 configuration: Release
 image: Visual Studio 2022
 build: off
+environment:
+  HGUSER: test
+  EMAIL: test@example.com
 install:
   - pip install poetry
   - poetry install
