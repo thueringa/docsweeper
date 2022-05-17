@@ -10,13 +10,13 @@
    :alt: PyPI
    :target: https://pypi.org/project/docsweeper/
 
-.. image:: https://readthedocs.org/projects/docsweeper/badge/?version=stable
-   :target: https://docsweeper.readthedocs.io/en/stable/?badge=stable
-   :alt: Documentation Status
-
 .. image:: https://img.shields.io/pypi/l/docsweeper?style=flat-square
    :alt: PyPI - License
    :target: https://pypi.org/project/docsweeper/
+
+.. image:: https://readthedocs.org/projects/docsweeper/badge/?version=stable&style=flat-square
+   :target: https://docsweeper.readthedocs.io/en/stable/?badge=stable
+   :alt: Documentation Status
 
 .. image:: https://img.shields.io/travis/com/thueringa/docsweeper?style=flat-square
    :alt: Travis (.com)
