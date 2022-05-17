@@ -25,7 +25,7 @@
     Miscellaneous
     -------------
 
-v1.2.2 (in development)
+v1.2.2 (released May 17, 2022)
 ===
 
 Bugfixes
