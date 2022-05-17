@@ -3,21 +3,19 @@ Welcome To Docsweeper's Documentation!
 ======================================
 
 *Docsweeper* is a linter for version controlled *Python* code bases that finds
-potentially outdated docstrings. *Docsweeper* interacts with the version control system
-to retrieve a full revision history of a given *Python* source file. For every code token
-in the file that has a docstring (see :pep:`257`), *Docsweeper* will analyze the version
-control history to determine:
+potentially outdated docstrings in your source files. For every code token in the file
+that has a docstring (see :pep:`257`), *Docsweeper* will interact with your *Git* or
+*Mercurial* version control system to determine:
 
 #. in which revision the docstring has last been changed, and
 #. how often the source code that is referenced by the docstring has been altered since
    that revision.
 
-This can help you quickly find potentially outdated docstrings in your *Python* code
-base.
+Used as a :ref:`stand-alone application <usage_cmdline>` or as a :ref:`plugin
+<usage_plugin>` for the `Flake8 <https://flake8.pycqa.org/en/latest/>`_ linter,
+*Docsweeper* can be integrated into your code check-in or linting process easily and
+help you quickly determine which docstrings potentially contain obsolete information.
 
-*Docsweeper* can be used as a :ref:`stand-alone application <usage_cmdline>` or as a
-:ref:`plugin <usage_plugin>` for the `Flake8 <https://flake8.pycqa.org/en/latest/>`_
-linter.
 Compatibility
 =============
 
