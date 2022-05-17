@@ -25,6 +25,14 @@
     Miscellaneous
     -------------
 
+v1.2.2 (in development)
+===
+
+Bugfixes
+--------
+
+- fix Windows build
+
 v1.2.1 (released May 14, 2022)
 ==============================
 

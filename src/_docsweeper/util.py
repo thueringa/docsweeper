@@ -44,7 +44,7 @@ def call_subprocess(command: List[str], cwd: Optional[Path] = None) -> str:
         result = subprocess.run(
             command, cwd=cwd, check=True, capture_output=True, text=True
         )
-    except (FileNotFoundError, PermissionError) as exception:
+    except (OSError) as exception:
         raise ExecutableError(command[0]) from exception
     return result.stdout
 
