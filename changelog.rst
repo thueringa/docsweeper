@@ -25,8 +25,15 @@
     Miscellaneous
     -------------
 
+v1.2.3 (released May 17, 2022)
+==============================
+
+Miscellaneous
+-------------
+- fix rst rendering error in changelog
+
 v1.2.2 (released May 17, 2022)
-===
+==============================
 
 Bugfixes
 --------
