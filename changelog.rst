@@ -43,6 +43,12 @@ Upgrading from Docsweeper v1.x
 v1.2.4 (in development)
 =======================
 
+Bugfixes
+--------
+
+- fix bug introduced in v1.2.1 that caused crash if input file was not
+  parseable at some point in version control history
+
 Miscellaneous
 -------------
 - improve error messages for CLI users
