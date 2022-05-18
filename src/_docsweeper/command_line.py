@@ -7,12 +7,17 @@ import multiprocessing.dummy
 import sys
 from functools import wraps
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Type
-
-if sys.version_info >= (3, 8):
-    from typing import TypedDict
-else:
-    from typing_extensions import TypedDict
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    NamedTuple,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+)
 
 if sys.version_info < (3, 8):
     from importlib_metadata import metadata, version
@@ -90,7 +95,7 @@ class _UnknownConfigException(Exception):
         super().__init__(self.message)
 
 
-class _ParsedArgs(TypedDict):
+class _ParsedArgs(NamedTuple):
     """Holds parsed command line arguments in a form usable by internal classes."""
 
     vcs_command_set_type: Type[VCSCommandSet]
@@ -429,8 +434,8 @@ def run(parsed_args: _ParsedArgs, **kwargs) -> None:  # type:ignore
             return (
                 file_,
                 analyze_file(
-                    parsed_args["vcs_command_set_type"],
-                    parsed_args["vcs_command_set_config"],
+                    parsed_args.vcs_command_set_type,
+                    parsed_args.vcs_command_set_config,
                     file_.resolve(),
                 ),
                 None,
@@ -439,7 +444,7 @@ def run(parsed_args: _ParsedArgs, **kwargs) -> None:  # type:ignore
             return file_, None, exception
 
     with multiprocessing.dummy.Pool() as pool:
-        analysis_results = pool.map(do, parsed_args["files"])
+        analysis_results = pool.map(do, parsed_args.files)
     for file_, result, error in analysis_results:
         if error:
             if isinstance(error, (VCSExecutableError, ParserError)):
@@ -449,7 +454,7 @@ def run(parsed_args: _ParsedArgs, **kwargs) -> None:  # type:ignore
                 # unexpected errors
                 message = f"Unexpected error occured: {error}. "
                 print(message, file=sys.stderr)
-                if parsed_args["debug"]:
+                if parsed_args.debug:
                     raise error
                 else:
                     raise SystemExit(
