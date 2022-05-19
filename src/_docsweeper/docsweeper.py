@@ -20,7 +20,7 @@ TokenHistory = Dict[str, "DocumentedToken"]
 logger = logging.getLogger(__name__)
 
 
-class ParserError(Exception):
+class ParserError(SyntaxError):
     """Raised when a code file could not be parsed."""
 
     def __init__(self, file_: Path, error: SyntaxError) -> None:
@@ -250,7 +250,7 @@ def _get_documented_tokens(
 
     :param path: the path of the python code
     :param data: if set, do not read python code from *path* and use *data* instead
-
+    :raises ParserError: if *path* is not parseable
     :returns: a dictionary that maps the name of each token to its parsed
         `DocumentedToken` object
 
