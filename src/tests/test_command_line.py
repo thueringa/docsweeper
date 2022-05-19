@@ -234,8 +234,7 @@ def test_argparser(arguments: List[str], expected: Dict[str, Any]) -> None:
         parsed = mocked_run.call_args[0][0]
         mocked_run.assert_called()
         for arg_name in expected.keys():
-            assert arg_name in parsed
-            assert parsed[arg_name] == expected[arg_name]
+            assert getattr(parsed, arg_name) == expected[arg_name]
 
 
 class CasesVerbosity:
