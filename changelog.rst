@@ -36,14 +36,14 @@ v2.0.0 (in development)
 Incompatible Changes
 --------------------
 
-- drop `command line option <cmdline_spec>` ``--vcs-shim``. Is replaced by command line
+- drop :ref:`command line option <cmdline_spec>` ``--vcs-shim``. Is replaced by command line
   option ``-vcs``.
 
 Upgrading from Docsweeper v1.x
 ------------------------------
 
 - Replace usage of command line option ``--vcs-shim`` with ``--vcs``. Parameter
-  signature of this option is unchanged from ``--vcs-shim``.
+  signature of ``--vcs`` option is unchanged from ``--vcs-shim``.
 
 v1.2.5 (in development)
 =======================
