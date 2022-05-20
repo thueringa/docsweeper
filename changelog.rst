@@ -26,6 +26,14 @@
     -------------
 
 
+v1.2.5 (in development)
+=======================
+
+Bugfixes
+--------
+
+- fix crash when following renames using mercurial version control systems
+
 v1.2.4 (released May 19, 2022)
 ==============================
 

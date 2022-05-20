@@ -431,15 +431,16 @@ class MercurialCommandSet(VCSCommandSet):
     class _MercurialFileCommand(_FileCommand):
         def tokenize_arguments(self, arguments: _FileCommandArguments) -> List[str]:
             revision = arguments.revision
+            repository_path = arguments.repository_path
             path = arguments.path
+
+            relative_path = path.relative_to(repository_path)
             return [
                 str(self._executable),
-                "--cwd",
-                str(path.parent),
                 "--pager=never",
                 "cat",
                 f"--rev={revision}",
-                path.name,
+                str(relative_path),
             ]
 
         @staticmethod
