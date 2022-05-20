@@ -25,6 +25,10 @@
     Miscellaneous
     -------------
 
+*Docsweeper* uses `Semantic Versioning <https://semver.org/>`_. A new PATCH release
+(x.y.\ **z**) contains only backwards-compatible bugfixes, a new MINOR release
+(x.\ **y**\.z) adds backwards-compatible functionality, and a new MAJOR release
+(**x**.y.y) introduces incompatible API changes.
 
 v1.2.5 (in development)
 =======================
