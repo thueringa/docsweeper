@@ -29,25 +29,35 @@ class CasesTokenHistory:
         "repo,config,expected",
         [
             (
-                fixture_ref("simple_repo"),
+                fixture_ref(repo),
                 VCSCommandSetConfig(follow_rename=True),
                 (1, 2, 1),
-            ),
+            )
+            for repo in ["simple_repo", "subfolder_repo"]
+        ]
+        + [
             (
-                fixture_ref("simple_repo"),
+                fixture_ref(repo),
                 VCSCommandSetConfig(follow_rename=False),
                 (1, 2, 1),
-            ),
+            )
+            for repo in ["simple_repo", "subfolder_repo"]
+        ]
+        + [
             (
-                fixture_ref("moved_file_repo"),
+                fixture_ref(repo),
                 VCSCommandSetConfig(follow_rename=True),
                 (1, 4, 2),
-            ),
-            (
-                fixture_ref("moved_file_repo"),
+            )
+            for repo in ["moved_file_repo", "moved_file_subfolder_repo"]
+        ]
+        + [
+            (  # type: ignore
+                fixture_ref(repo),
                 VCSCommandSetConfig(follow_rename=False),
                 (1, None, 1),
-            ),
+            )
+            for repo in ["moved_file_repo", "moved_file_subfolder_repo"]
         ],
         idgen="{repo}-{config}",
     )
@@ -126,7 +136,9 @@ def test_fun():
     with pytest.raises(ValueError, match="does not seem to be under version control"):
         analyze_file(
             simple_repo.vcs_command_set_type,
-            simple_repo.vcs_command_set_config,
+            simple_repo.vcs_command_set_config.merge(
+                VCSCommandSetConfig(follow_rename=True)
+            ),
             code_file,
         )
 
@@ -224,4 +236,6 @@ def test_analyze_file_errors(
     path: Path, vcs_type: Type[VCSCommandSet], vcs_config: VCSCommandSetConfig
 ) -> None:
     """Test :func:`docsniffer.analyze_file` with wrong files and executables."""
-    analyze_file(vcs_type, vcs_config, path)
+    analyze_file(
+        vcs_type, vcs_config.merge(VCSCommandSetConfig(follow_rename=True)), path
+    )

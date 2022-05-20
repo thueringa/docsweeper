@@ -17,35 +17,51 @@ faker = Faker()
 
 
 @fixture
-def shim(test_repo: Repository) -> Tuple[Repository, VCSShim]:
+@parametrize(
+    "extra_config",
+    [
+        VCSCommandSetConfig(follow_rename=rename_setting)
+        for rename_setting in [True, False]
+    ],
+    ids=["follow_rename", "no_follow_rename"],
+)
+def shim(
+    test_repo: Repository, extra_config: VCSCommandSetConfig
+) -> Tuple[Repository, VCSShim, VCSCommandSetConfig]:
     """Return a fixture that combines a test repository and a compatible :class:`VCSShim`.
 
     :param test_repo: the test repository
-    :returns: *test_repo* itself and a compatible shim
+    :param extra_config: configuration parametrization
+    :returns: *test_repo* itself and a compatible shim, and config
 
     """
-    return test_repo, VCSShim(
-        test_repo.vcs_command_set_type, test_repo.vcs_command_set_config
-    )
+    full_config = test_repo.vcs_command_set_config.merge(extra_config)
+    return test_repo, VCSShim(test_repo.vcs_command_set_type, full_config), full_config
 
 
 class CaseGetFile:
     """Test cases for :func:`.test_get_file_from_repo`."""
 
     def case_happy(
-        self, shim: Tuple[Repository, VCSShim]
+        self, shim: Tuple[Repository, VCSShim, VCSCommandSetConfig]
     ) -> Tuple[Repository, VCSShim, List[Tuple[RevisionIdentifier, Path]]]:
         """Success scenario."""
         test_repo = shim[0]
-        return (
-            test_repo,
-            shim[1],
-            test_repo.revisions,
+        config = shim[2]
+        revisions = (
+            test_repo.revisions
+            if config.follow_rename
+            else [
+                revision
+                for revision in test_repo.revisions
+                if revision[1] == test_repo.revisions[0][1]
+            ]
         )
+        return (test_repo, shim[1], revisions)
 
     @pytest.mark.xfail(raises=ValueError, strict=True)
     def case_filename_error(
-        self, shim: Tuple[Repository, VCSShim]
+        self, shim: Tuple[Repository, VCSShim, VCSCommandSetConfig]
     ) -> Tuple[Repository, VCSShim, List[Tuple[RevisionIdentifier, Path]]]:
         """Fail on trying to retrieve a nonexisting file."""
         test_repo = shim[0]
@@ -70,7 +86,9 @@ class CaseGetFile:
         ],
     )
     def case_revision_error(
-        self, shim: Tuple[Repository, VCSShim], revision: RevisionIdentifier
+        self,
+        shim: Tuple[Repository, VCSShim, VCSCommandSetConfig],
+        revision: RevisionIdentifier,
     ) -> Tuple[Repository, VCSShim, List[Tuple[RevisionIdentifier, Path]]]:
         """Fail upon errors with revision naming."""
         test_repo = shim[0]
@@ -102,11 +120,21 @@ class CaseGetAllRevisions:
     """Test cases for :func:`.test_get_all_revisions`."""
 
     def case_happy(
-        self, shim: Tuple[Repository, VCSShim]
-    ) -> Tuple[Repository, VCSShim, Path]:
+        self, shim: Tuple[Repository, VCSShim, VCSCommandSetConfig]
+    ) -> Tuple[Repository, VCSShim, Path, List[Tuple[RevisionIdentifier, Path]]]:
         """Happy path."""
         test_repo = shim[0]
-        return (test_repo, shim[1], test_repo.revisions[0][1])
+        config = shim[2]
+        revisions = (
+            test_repo.revisions
+            if config.follow_rename
+            else [
+                revision
+                for revision in test_repo.revisions
+                if revision[1] == test_repo.revisions[0][1]
+            ]
+        )
+        return (test_repo, shim[1], test_repo.revisions[0][1], revisions)
 
     @parametrize(
         "file_name",
@@ -115,35 +143,37 @@ class CaseGetAllRevisions:
                 "nonexisting_file",
                 marks=pytest.mark.xfail(raises=ValueError, strict=True),
             ),
-            pytest.param(
-                "",
-                marks=pytest.mark.xfail(raises=ValueError, strict=True),
-            ),
         ],
     )
     def case_filename_error(
-        self, shim: Tuple[Repository, VCSShim], file_name: str
-    ) -> Tuple[Repository, VCSShim, str]:
+        self, shim: Tuple[Repository, VCSShim, VCSCommandSetConfig], file_name: str
+    ) -> Tuple[Repository, VCSShim, str, List[Tuple[RevisionIdentifier, Path]]]:
         """Fail on errors with the file path."""
         test_repo = shim[0]
-        return (test_repo, shim[1], file_name)
+        return (test_repo, shim[1], file_name, test_repo.revisions)
 
 
-@parametrize_with_cases("repo,shim,file_name", cases=CaseGetAllRevisions)
+@parametrize_with_cases(
+    "repo,shim,file_name,expected_revisions", cases=CaseGetAllRevisions
+)
 def test_get_all_revisions(
-    repo: Repository, shim: VCSShim, file_name: Union[str, Path]
+    repo: Repository,
+    shim: VCSShim,
+    file_name: Union[str, Path],
+    expected_revisions: List[Tuple[RevisionIdentifier, Path]],
 ) -> None:
     """Test behavior of :func:`_docsweeper.version_control.VCSShim.get_all_revisions`.
 
     :param repo: a test repository
     :param shim: the shim to be used
     :param file_name: path of the file for which revisions are retrieved
+    :param expected_revisions: expected result (depends on whether renames are followed
+        and maybe other parameters)
 
     """
     file_name = Path(repo.repository_path, file_name)
     revisions = shim.get_all_revisions(file_name)
-    expected_revisions = [elem[0] for elem in repo.revisions]
-    assert revisions == expected_revisions
+    assert revisions == [revision[0] for revision in expected_revisions]
 
 
 class CaseVCSRoot:
@@ -168,7 +198,12 @@ class CaseVCSRoot:
         """Test on a repository with subfolder."""
         return (
             repo,
-            VCSShim(repo.vcs_command_set_type, repo.vcs_command_set_config),
+            VCSShim(
+                repo.vcs_command_set_type,
+                repo.vcs_command_set_config.merge(
+                    VCSCommandSetConfig(follow_rename=True)
+                ),
+            ),
             repo.revisions[0][1].parts[0],
         )
 
@@ -202,7 +237,10 @@ def test_get_old_name(repo: Repository) -> None:
 
     """
 
-    shim = VCSShim(repo.vcs_command_set_type, repo.vcs_command_set_config)
+    shim = VCSShim(
+        repo.vcs_command_set_type,
+        repo.vcs_command_set_config.merge(VCSCommandSetConfig(follow_rename=True)),
+    )
     old_name = shim.get_old_name(
         Path(repo.repository_path, repo.revisions[0][1]), repo.revisions[1][0]
     )
