@@ -15,7 +15,7 @@ from typing import List, NamedTuple, Optional, Tuple, Type
 
 import pytest
 from faker import Faker
-from pytest_cases import fixture, fixture_union
+from pytest_cases import fixture, fixture_union, parametrize
 
 from _docsweeper.util import RevisionIdentifier, call_subprocess
 from _docsweeper.version_control import (
@@ -23,7 +23,6 @@ from _docsweeper.version_control import (
     MercurialCommandSet,
     VCSCommandSet,
     VCSCommandSetConfig,
-    VCSShim,
     command_sets,
 )
 
@@ -105,6 +104,10 @@ class _VCSHelper(ABC):
         """
         pass
 
+    @abstractmethod
+    def init(self, repository_path: Path) -> None:
+        """Initialize a repository at *repository_path*."""
+
     def write_and_commit_content(
         self,
         file_: Path,
@@ -127,14 +130,7 @@ class _VCSHelper(ABC):
 
 
 class Repository(NamedTuple):
-    """Provides everything needed to test a command set on a real repository.
-
-    Holds an instance of :class:`~.VCSShim` in *shim*. To enable comfortable
-    inspection of the repository during tests, a list of revision names is found in
-    *revisions*, as well as the path of a file *code_file*, which is checked into the
-    version control system. *repository_path* holds the path of the repository itself.
-
-    """
+    """A temporary test repository in the file system."""
 
     repository_path: Path
     """Path of the repository in the file system."""
@@ -145,10 +141,11 @@ class Repository(NamedTuple):
     in this revision.
 
     """
-    shim: VCSShim
-    helper: _VCSHelper
     vcs_command_set_type: Type[VCSCommandSet]
+    """Type of version control used."""
     vcs_command_set_config: VCSCommandSetConfig
+    """Config. Only the attribute *executable* is set."""
+    helper: _VCSHelper
 
 
 @fixture(scope="session")
@@ -301,6 +298,9 @@ class _GitHelper(_VCSHelper):
             cwd=repository_path,
         )
 
+    def init(self, repository_path: Path) -> None:
+        call_subprocess([str(self.executable), "init", str(repository_path)])
+
 
 class _MercurialHelper(_VCSHelper):
     """An instance of :class:`_VCSHelper` for mercurial."""
@@ -360,100 +360,67 @@ class _MercurialHelper(_VCSHelper):
             cwd=repository_path,
         )
 
+    def init(self, repository_path: Path) -> None:
+        call_subprocess([str(self.executable), "init", str(repository_path)])
+
 
 @fixture(scope="session")
+@parametrize("config", [git_config, hg_config], scope="session")
 def simple_repo(
-    command_set_test_config: Tuple[
-        Type[VCSCommandSet], VCSCommandSetConfig, Type[_VCSHelper]
-    ],
     tmpdir_factory: pytest.TempdirFactory,
     faker: Faker,
+    config: CommandSetTestConfig,
 ) -> Repository:
     """Return simple repository fixture containing only a single file."""
-    command_set, vcs_config, vcs_helper = command_set_test_config
-    assert vcs_config.executable is not None
     return _build_simple_repo(
-        tmpdir_factory,
-        command_set,
-        vcs_config,
-        vcs_helper(vcs_config.executable),
-        f"simple_{command_set.name}_repo",
-        faker.file_name(),
+        config, f"simple_{config[0].name}_repo", tmpdir_factory, faker
     )
 
 
 @fixture(scope="session")
+@parametrize("config", [git_config, hg_config], scope="session")
 def subfolder_repo(
-    command_set_test_config: Tuple[
-        Type[VCSCommandSet], VCSCommandSetConfig, Type[_VCSHelper]
-    ],
     tmpdir_factory: pytest.TempdirFactory,
     faker: Faker,
+    config: CommandSetTestConfig,
 ) -> Repository:
     """Return a repository fixture containing a file in a subfolder."""
-    command_set, vcs_config, vcs_helper = command_set_test_config
-    assert vcs_config.executable is not None
     return _build_simple_repo(
+        config,
+        f"subfolder_{config[0].name}_repo",
         tmpdir_factory,
-        command_set,
-        vcs_config,
-        vcs_helper(vcs_config.executable),
-        f"simple_{command_set.name}_repo",
-        Path("subfolder", faker.file_name()),
+        faker,
+        Path("subfolder", faker.file_name(extension=".py")),
     )
 
 
 @fixture(scope="session")
-def moved_file_subfolder_repo(
-    command_set_test_config: Tuple[
-        Type[VCSCommandSet], VCSCommandSetConfig, Type[_VCSHelper]
-    ],
-    faker: Faker,
+@parametrize("config", [git_config, hg_config], scope="session")
+def moved_file_repo(
     tmpdir_factory: pytest.TempdirFactory,
+    faker: Faker,
+    config: CommandSetTestConfig,
+) -> Repository:
+    """Return a repository fixture  with a file that has been moved at some point."""
+    return _build_moved_file_repo(
+        config, f"moved_file_{config[0].name}_repo", tmpdir_factory, faker
+    )
+
+
+@fixture(scope="session")
+@parametrize("config", [git_config, hg_config], scope="session")
+def moved_file_subfolder_repo(
+    tmpdir_factory: pytest.TempdirFactory,
+    faker: Faker,
+    config: CommandSetTestConfig,
 ) -> Repository:
     """Return a repository fixture that contains in a subfolder that has been moved."""
-    command_set, vcs_config, vcs_helper_type = command_set_test_config
-    assert vcs_config.executable is not None
-    vcs_helper = vcs_helper_type(vcs_config.executable)
-    test_repo = _build_simple_repo(
+    return _build_moved_file_repo(
+        config,
+        f"moved_file_{config[0].name}_repo",
         tmpdir_factory,
-        command_set,
-        vcs_config,
-        vcs_helper,
-        f"moved_{command_set.name}_repo",
-        Path("subfolder", faker.file_name()),
-    )
-    repository_path = test_repo.repository_path
-    code_file = test_repo.revisions[0][1]
-    destination_file = repository_path.joinpath("subfolder", faker.file_name())
-    vcs_helper.move_file(repository_path, code_file, destination_file)
-    vcs_helper.commit("moved file.", repository_path)
-
-    new_content = """def test_function():
-    \"\"\"test a function\"\"\"
-    return 6"""
-    vcs_helper.write_and_commit_content(
-        destination_file, new_content, "Changed code.", repository_path
-    )
-    revisions = test_repo.revisions
-    new_revisions = vcs_helper.get_revisions(repository_path, destination_file)[:2]
-    new_revisions.reverse()
-    for revision in new_revisions:
-        revisions.insert(
-            0,
-            (
-                revision,
-                destination_file.relative_to(repository_path),
-            ),
-        )
-
-    return Repository(
-        repository_path,
-        revisions,
-        test_repo.shim,
-        test_repo.helper,
-        test_repo.vcs_command_set_type,
-        test_repo.vcs_command_set_config,
+        faker,
+        Path("subfolder", "code.py"),
     )
 
 
@@ -469,40 +436,33 @@ def faker() -> Faker:
     return Faker()
 
 
-@fixture(scope="session")
-def moved_file_repo(
-    command_set_test_config: Tuple[
-        Type[VCSCommandSet], VCSCommandSetConfig, Type[_VCSHelper]
-    ],
-    faker: Faker,
+def _build_moved_file_repo(
+    config: CommandSetTestConfig,
+    repo_name: str,
     tmpdir_factory: pytest.TempdirFactory,
+    faker: Faker,
+    code_file_path: Optional[Path] = None,
 ) -> Repository:
     """Return a repository fixture  with a file that has been moved at some point."""
-    command_set, vcs_config, vcs_helper_type = command_set_test_config
-    assert vcs_config.executable is not None
-    vcs_helper = vcs_helper_type(vcs_config.executable)
-    test_repo = _build_simple_repo(
-        tmpdir_factory,
-        command_set,
-        vcs_config,
-        vcs_helper,
-        f"moved_{command_set.name}_repo",
-        faker.file_name(),
+
+    basic_repo = _build_simple_repo(
+        config, repo_name, tmpdir_factory, faker, code_file_path
     )
-    repository_path = test_repo.repository_path
-    code_file = test_repo.revisions[0][1]
+    code_file = basic_repo.revisions[0][1]
+    repository_path = basic_repo.repository_path
     destination_file = repository_path.joinpath(faker.file_name())
-    vcs_helper.move_file(repository_path, code_file, destination_file)
-    vcs_helper.commit("moved file.", repository_path)
+    helper = basic_repo.helper
+    helper.move_file(repository_path, code_file, destination_file)
+    helper.commit("moved file.", repository_path)
 
     new_content = """def test_function():
     \"\"\"test a function\"\"\"
     return 6"""
-    vcs_helper.write_and_commit_content(
+    helper.write_and_commit_content(
         destination_file, new_content, "Changed code.", repository_path
     )
-    revisions = test_repo.revisions
-    new_revisions = vcs_helper.get_revisions(repository_path, destination_file)[:2]
+    revisions = basic_repo.revisions
+    new_revisions = helper.get_revisions(repository_path, destination_file)[:2]
     new_revisions.reverse()
     for revision in new_revisions:
         revisions.insert(
@@ -512,31 +472,33 @@ def moved_file_repo(
                 destination_file.relative_to(repository_path),
             ),
         )
-
     return Repository(
         repository_path,
         revisions,
-        test_repo.shim,
-        test_repo.helper,
-        test_repo.vcs_command_set_type,
-        test_repo.vcs_command_set_config,
+        basic_repo.vcs_command_set_type,
+        basic_repo.vcs_command_set_config,
+        helper,
     )
 
 
 def _build_simple_repo(
+    config: CommandSetTestConfig,
+    repo_name: str,
     tmpdir_factory: pytest.TempdirFactory,
-    command_set: Type[VCSCommandSet],
-    command_set_config: VCSCommandSetConfig,
-    vcs_helper: _VCSHelper,
-    repository_name: str,
-    file_name: Path,
+    faker: Faker,
+    code_file_path: Optional[Path] = None,
 ) -> Repository:
-    """Create a test repository from parameters."""
-    repository_path = Path(tmpdir_factory.mktemp(repository_name))
-    call_subprocess([str(command_set_config.executable), "init", str(repository_path)])
+    repository_path = Path(tmpdir_factory.mktemp(repo_name))
+    vcs_command_set, vcs_config, _ = config
+    assert vcs_config.executable
+    executable = vcs_config.executable
+    helper = _helpers[vcs_command_set.name](executable)
+    helper.init(repository_path)
     revisions = []
 
-    code_file = repository_path.joinpath(file_name)
+    code_file = repository_path.joinpath(
+        code_file_path if code_file_path else Path(faker.file_name(extension="py"))
+    )
     for index, content in enumerate(
         [
             """def test_function():
@@ -550,20 +512,19 @@ def _build_simple_repo(
     return 2""",
         ]
     ):
-        vcs_helper.write_and_commit_content(
+        helper.write_and_commit_content(
             code_file, content, f"commit #{index}", repository_path
         )
     revisions = [
         (revision, code_file.relative_to(repository_path))
-        for revision in vcs_helper.get_revisions(repository_path, code_file)
+        for revision in helper.get_revisions(repository_path, code_file)
     ]
     return Repository(
         repository_path,
         revisions,
-        VCSShim(command_set, command_set_config),
-        vcs_helper,
-        command_set,
-        command_set_config,
+        vcs_command_set,
+        VCSCommandSetConfig(executable=executable),
+        helper,
     )
 
 
@@ -617,3 +578,6 @@ def pytest_collection_modifyitems(
             kept.append(item)
     items[:] = kept
     config.hook.pytest_deselected(items=discarded)
+
+
+_helpers = {"git": _GitHelper, "hg": _MercurialHelper}
