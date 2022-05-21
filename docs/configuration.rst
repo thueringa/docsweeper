@@ -11,13 +11,13 @@ configuration file
 <https://flake8.pycqa.org/en/latest/user/configuration.html#configuration-locations>`_
 or by passing specific command line options to the ``flake8`` command.
 
-.. important:: The *Flake8* plugin is disabled by default. Add ``DOC100`` to your
+.. important:: The *Flake8* plugin is disabled by default. Add ``docsweeper`` to your
    enabled extensions in your *Flake8* configuration to use it:
 
    .. code-block:: ini
 
       [flake8]
-      enable-extensions=DOC100
+      enable-extensions=docsweeper
 
 .. _flake8_file_config:
 

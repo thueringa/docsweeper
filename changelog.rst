@@ -52,6 +52,9 @@ Bugfixes
 --------
 
 - fix crash when following renames using mercurial version control systems
+- Change parameter name of *Docsweeper* in Flake8 option ``--enable-extension`` to
+  ``docsweeper``
+- fix crash of Flake8 plugin when it was invoked with no version control system chosen
 
 v1.2.4 (released May 19, 2022)
 ==============================

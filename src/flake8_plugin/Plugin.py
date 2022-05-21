@@ -54,7 +54,7 @@ class Plugin:
         self.off_by_default = True
 
         self._token_statistics = []
-        if Plugin.err_value not in options.enable_extensions:
+        if Plugin.name not in options.enable_extensions:
             return
         default_config = docsweeper.command_sets[self._vcs_type.name][1]
         executable = (
@@ -132,5 +132,6 @@ class Plugin:
             for command_set, _ in docsweeper.command_sets.values()
             if command_set.name == options.vcs
         ).__next__()
-        if options.vcs_executable:
-            self._vcs_executable = options.vcs_executable
+        self._vcs_executable = (
+            options.vcs_executable if options.vcs_executable else None
+        )
