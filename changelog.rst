@@ -38,22 +38,31 @@ Incompatible Changes
 
 - drop :ref:`command line option <cmdline_spec>` ``--vcs-shim``. Is replaced by command line
   option ``-vcs``.
-
+- drop enabling Flake8 plugin with the option string ``--enable-extensions=DOC100``
 Upgrading from Docsweeper v1.x
 ------------------------------
 
 - Replace usage of command line option ``--vcs-shim`` with ``--vcs``. Parameter
   signature of ``--vcs`` option is unchanged from ``--vcs-shim``.
+- Replace usage of ``DOC100`` to enable Flake8 plugin with ``docsweeper``
 
-v1.2.5 (in development)
-=======================
+v1.2.5 (released May 21, 2022)
+==============================
+
+Deprecations
+------------
+
+- deprecate enabling Flake8 Plugin with option ``--enable-extensions=DOC100``
+
+New Features
+------------
+
+- enabling Flake8 Plugin with option ``--enable-extensions=docsweeper``
 
 Bugfixes
 --------
 
 - fix crash when following renames using mercurial version control systems
-- Change parameter name of *Docsweeper* in Flake8 option ``--enable-extension`` to
-  ``docsweeper``
 - fix crash of Flake8 plugin when it was invoked with no version control system chosen
 
 v1.2.4 (released May 19, 2022)
