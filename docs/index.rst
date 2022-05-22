@@ -28,20 +28,37 @@ one of the version control systems you intend to use *Docsweeper* with:
    release of *Mercurial* with `official support
    <https://www.mercurial-scm.org/wiki/Python3>`_ for *Python* 3.
 
-.. include:: installation.rst
+Installation
+============
 
-.. include:: usage.rst
+In addition to a working Python v3.7+ environment, the following additional packages are
+required as well:
 
-.. include:: configuration.rst
+- `click <https://click.palletsprojects.com/en/8.1.x/>`_ v8.1.0 or newer.
 
-Further Information
-===================
+*Docsweeper* is available on `PyPI <https://pypi.org/project/docsweeper/>`_. Install it
+with `pip <https://pip.pypa.io/>`_ to take care of dependencies automatically:
+
+.. code-block:: console
+
+   $ pip install docsweeper
+
+After installation, see section :ref:`usage` for instructions on how to configure and
+run *Docsweeper* on your code base.
+
+Documentation Contents
+======================
+
+.. toctree::
+   :maxdepth: 2
+
+   Overview and Installation <self>
+   usage
+   reference
 
 .. toctree::
    :maxdepth: 1
 
-   Installation and Usage <self>
-   reference
    developer
    changelog
 

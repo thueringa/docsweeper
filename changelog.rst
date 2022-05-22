@@ -30,6 +30,9 @@
 (x.\ **y**\.z) adds backwards-compatible functionality, and a new MAJOR release
 (**x**.y.y) introduces incompatible API changes.
 
+v1.2.6 (in development)
+=======================
+
 v1.2.5 (released May 21, 2022)
 ==============================
 
