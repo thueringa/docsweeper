@@ -39,6 +39,7 @@ Incompatible Changes
 - drop :ref:`command line option <cmdline_spec>` ``--vcs-shim``. Is replaced by command line
   option ``-vcs``.
 - drop enabling Flake8 plugin with the option string ``--enable-extensions=DOC100``
+
 Upgrading from Docsweeper v1.x
 ------------------------------
 
