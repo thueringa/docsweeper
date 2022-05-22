@@ -22,6 +22,11 @@ root:
    $ cd docsweeper
    $ poetry install
 
+Invoking Docsweeper From Python Code
+====================================
+
+
+See :ref:`code-usage`.
 
 Running The Test Suite
 ======================

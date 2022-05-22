@@ -53,9 +53,6 @@ exclude_patterns = [
     "_build",
     "Thumbs.db",
     ".DS_Store",
-    "configuration.rst",
-    "usage.rst",
-    "installation.rst",
 ]
 
 intersphinx_mapping = {
