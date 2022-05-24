@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 import subprocess
+import warnings
 from pathlib import Path
 from typing import Dict, Generic, Hashable, List, Optional, TypeVar
 
@@ -21,6 +22,21 @@ class ExecutableError(Exception):
         """Raise an error that denotes a problem with *executable*."""
         self.executable = executable
         super().__init__(f"Invalid executable {executable}")
+
+
+def deprecation_warning(what: str, since_when: str, replacement: str) -> None:
+    """Warn the user that use of *what* is deprecated.
+
+    :param what: the function/option/... that is deprecated
+    :param since_when: the version of Docsweeper when *what* was deprecated
+    :param replacement: what to use instead
+
+    """
+    warning = (
+        f"Use of {what} is DEPRECATED since Docsweeper {since_when}! Use {replacement} "
+        "instead."
+    )
+    warnings.warn(warning, FutureWarning)
 
 
 def call_subprocess(command: List[str], cwd: Optional[Path] = None) -> str:
