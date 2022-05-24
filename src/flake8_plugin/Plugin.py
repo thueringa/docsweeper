@@ -12,6 +12,8 @@ if sys.version_info < (3, 8):
 else:
     from importlib.metadata import version
 
+from util import deprecation_warning
+
 import docsweeper
 
 
@@ -54,6 +56,10 @@ class Plugin:
         self.off_by_default = True
 
         self._token_statistics = []
+        if Plugin.err_value in options.enable_extensions:
+            deprecation_warning(
+                "'DOC100' in 'enable_extensions'", "1.2.5", "'docsweeper'"
+            )
         if (
             Plugin.name not in options.enable_extensions
             and Plugin.err_value not in options.enable_extensions

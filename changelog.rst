@@ -33,6 +33,11 @@
 v1.2.6 (in development)
 =======================
 
+Bugfixes
+--------
+
+- warn user about deprecations introduced in v1.2.5
+
 v1.2.5 (released May 21, 2022)
 ==============================
 
