@@ -5,7 +5,6 @@ import configparser
 import logging
 import multiprocessing.dummy
 import sys
-import warnings
 from functools import wraps
 from pathlib import Path
 from typing import (
@@ -35,6 +34,7 @@ from _docsweeper.docsweeper import (
     analyze_file,
 )
 from _docsweeper.result_handler import ClickResultHandler
+from _docsweeper.util import deprecation_warning
 from _docsweeper.version_control import (
     VCSCommandSet,
     VCSCommandSetConfig,
@@ -208,11 +208,9 @@ def _handle_deprecated_vcs_shim_arg(
     ctx: click.Context, param: click.Option, value: Optional[str]
 ) -> Any:
     if value:
-        warning = (
-            "Command line option --vcs-shim is DEPRECATED since Docsweeper v1.2.0! Use "
-            "--vcs instead."
+        deprecation_warning(
+            "Command line option '--vcs-shim'", "1.2.0", "command line option '--vcs'"
         )
-        warnings.warn(warning, FutureWarning)
         return _handle_vcs_command_set_type_arg(ctx, _vcs_option, value)
     return None
 
