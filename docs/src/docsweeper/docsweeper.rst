@@ -77,24 +77,19 @@ provides user-defined parameters to customize version control behavior.
 
 .. autoclass:: docsweeper.VCSCommandSet
    :members:
-   :exclude-members: __new__, __init__
-   :show-inheritance:
 
    .. versionadded:: 0.4.0
+
 .. autoclass:: docsweeper.GitCommandSet
    :members:
    :exclude-members: __init__
-   :show-inheritance:
 
 .. autoclass:: docsweeper.MercurialCommandSet
    :members:
    :exclude-members: __init__
-   :show-inheritance:
 
 .. autoclass:: docsweeper.VCSCommandSetConfig
    :members:
-   :exclude-members: __new__,__init__
-   :show-inheritance:
 
 .. autoattribute:: docsweeper::command_sets
 
