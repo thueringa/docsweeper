@@ -12,9 +12,8 @@ if sys.version_info < (3, 8):
 else:
     from importlib.metadata import version
 
-from util import deprecation_warning
-
 import docsweeper
+from _docsweeper.util import deprecation_warning
 
 
 class Plugin:
