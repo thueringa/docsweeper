@@ -69,7 +69,7 @@ class CaseGetFile:
         return (
             test_repo,
             shim[1],
-            list(map(lambda x: (x[0], Path("nonexisting_file")), revisions)),
+            [(x[0], Path("nonexisting_file")) for x in revisions],
         )
 
     @parametrize(
@@ -93,7 +93,7 @@ class CaseGetFile:
         """Fail upon errors with revision naming."""
         test_repo = shim[0]
         revisions = copy.deepcopy(test_repo.revisions)
-        return (test_repo, shim[1], list(map(lambda x: (revision, x[1]), revisions)))
+        return (test_repo, shim[1], [(revision, x[1]) for x in revisions])
 
 
 @parametrize_with_cases("repo,shim,revisions", cases=CaseGetFile)
