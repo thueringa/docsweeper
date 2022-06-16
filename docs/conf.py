@@ -74,6 +74,10 @@ autodoc_typehints = "description"
 autoclass_content = "class"
 autodoc_typehints_format = "short"
 autodoc_class_signature = "separated"
+autodoc_default_options = {
+    "exclude-members": "__new__, __init__",
+    "show-inheritance": True,
+}
 
 todo_include_todos = True
 

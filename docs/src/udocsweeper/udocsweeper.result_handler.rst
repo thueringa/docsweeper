@@ -7,19 +7,15 @@
    :members:
    :exclude-members: __new__
    :private-members: _format_result
-   :show-inheritance:
 
 .. autoclass:: _docsweeper.result_handler.HumanReadableStringResultHandler
    :members:
    :exclude-members: __new__
-   :show-inheritance:
 
 .. autoclass:: _docsweeper.result_handler.ClickResultHandler
    :members:
    :exclude-members: __new__
-   :show-inheritance:
 
 .. autoclass:: _docsweeper.result_handler.StdOutResultHandler
    :members:
    :exclude-members: __new__
-   :show-inheritance:

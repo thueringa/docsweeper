@@ -9,5 +9,3 @@
 
 .. autoclass:: _docsweeper.command_line._ParsedArgs
    :members:
-   :exclude-members: __new__,__init__
-   :show-inheritance:
